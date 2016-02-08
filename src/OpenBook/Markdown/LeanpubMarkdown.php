@@ -1,17 +1,18 @@
 <?php
 namespace OpenBook\Markdown;
-use cebe\markdown\MarkdownExtra;
+use cebe\markdown\Markdown;
 
 /**
  * Markdown parser for leanpub flavored markdown.
  *
  * @author Oleg Krivtsov <olegkrivtsov@gmail.com>
  */
-class LeanpubMarkdown extends MarkdownExtra {
+class LeanpubMarkdown extends Markdown {
     
     // include block element parsing using traits
     use \cebe\markdown\block\FencedCodeTrait;
     use \OpenBook\Markdown\Block\FootnoteTrait;
+    use \OpenBook\Markdown\Block\LeanpubHeadlineTrait;
     use \OpenBook\Markdown\Block\LeanpubQuoteTrait;
     use \OpenBook\Markdown\Block\LeanpubXmatterTrait;
     use \OpenBook\Markdown\Block\LeanpubTableTrait;
@@ -22,7 +23,48 @@ class LeanpubMarkdown extends MarkdownExtra {
     
     public $splitIntoChapters = false;
     
+    /**
+     * Images
+     * @var array 
+     */
     public $images = [];
+    
+    /**
+     * Table of contents
+     * @var array 
+     */
+    public $toc = [];
+        
+    /**
+	 * @inheritDoc
+	 */
+	protected $escapeCharacters = [
+		// from Markdown
+		'\\', // backslash
+		'`', // backtick
+		'*', // asterisk
+		'_', // underscore
+		'{', '}', // curly braces
+		'[', ']', // square brackets
+		'(', ')', // parentheses
+		'#', // hash mark
+		'+', // plus sign
+		'-', // minus sign (hyphen)
+		'.', // dot
+		'!', // exclamation mark
+		'<', '>',
+		// added by LeanpubMarkdown
+		':', // colon
+		'|', // pipe
+	];
+    
+    protected $curChapterId = '';
+    
+    protected $elementIds = [];
+    
+    protected $headlines = [];
+    
+    protected $curHeadlines = [-1, -1, -1, -1, -1, -1];
     
     public function parse($text)
 	{
@@ -39,15 +81,41 @@ class LeanpubMarkdown extends MarkdownExtra {
 		$absy = $this->parseBlocks(explode("\n", $text));
 		
         if($this->splitIntoChapters) {
+            
+            // Split absy into chapters
+            $chapters = [];
+            foreach($absy as $block) {
+                if($block[0]=='leanpubHeadline' && $block['level']==1) {
+                    // Add new chapter
+                    $chapterTitle = $this->renderAbsy($block['content']);
+                    $chapterId = strtolower(preg_replace('/[^\w\d]/', '_', $chapterTitle));
+                    $chapterId .= '.html';
+                    $chapters[] = [
+                        'id' => $chapterId,
+                        'title' => $chapterTitle,
+                        'content' => []
+                    ];
+                }
+                
+                if(empty($chapters))
+                    continue;
+                
+                $chapters[count($chapters)-1]['content'][] = $block;
+            }
+            
+            // Render each chapter
             $markup = [];
-            foreach($absy as $chapterAbsy) {
-                $chapterId = $this->renderAbsy($chapterAbsy['id']);
-                $chapterMarkup = $this->renderAbsy($chapterAbsy['content']);
+            foreach($chapters as $chapter) {
                 $markup[] = [
-                    'id'=>$chapterId, 
-                    'content'=>$chapterMarkup
+                    'id' => $chapter['id'],
+                    'title' => $chapter['title'],
+                    'content' => $this->renderAbsy($chapter['content'])
                 ];
             }
+            
+            // Render Table of Contents
+            $this->_renderToc();
+            
         } else {
             $markup = $this->renderAbsy($absy);
         }
@@ -56,83 +124,37 @@ class LeanpubMarkdown extends MarkdownExtra {
 		return $markup;
 	}
     
-    protected function parseBlocks($lines)
+    protected function parseBlock($lines, $current)
 	{
-		if ($this->_depth >= $this->maximumNestingLevel) {
-			// maximum depth is reached, do not parse input
-			return [['text', implode("\n", $lines)]];
-		}
-		$this->_depth++;
+        // Look for special properties before block start
+        $props = $this->parsePropList($lines[$current]);
+        if($props!=false && isset($lines[$current+1]) && rtrim($lines[$current+1])!='') {
+            $current++;
+        }
+        
+		// identify block type for this line
+		$blockType = $this->detectLineType($lines, $current);
 
-		$blocks = [];
-
-		$blockTypes = $this->blockTypes();
-
-		// convert lines to blocks
-		for ($i = 0, $count = count($lines); $i < $count; $i++) {
-			$line = $lines[$i];
-			if (!empty($line) && rtrim($line) !== '') { // skip empty lines
+        // call consume method for the detected block type to consume further lines
+		$result = $this->{'consume' . $blockType}($lines, $current);
+        
+        if(is_array($props) && is_array($result)) {
+            $result= [array_merge($result[0], $props), $result[1]];
+        }
+        
+        $block = $result[0];
+        if($block[0]=='leanpubHeadline') {
+            $level = $block['level'];
+            
+            if($level==1) {
+                $this->headlines[] = $block;
+                $this->curHeadlines = [count($this->headlines)-1, -1, -1, -1, -1, -1];
+            } else if($level==2) {
                 
-                // Look for special properties before block start
-                $props = $this->parsePropList($lines[$i]);
-                if($props!=false && isset($lines[$i+1]) && rtrim($lines[$i+1])!='') {
-                    $i++;
-                    $line = $lines[$i];
-                }
-                    
-				// identify a blocks beginning
-				$identified = false;
-				foreach($blockTypes as $blockType) {
-					if ($this->{'identify' . $blockType}($line, $lines, $i)) {
-						// call consume method for the detected block type to consume further lines
-						list($block, $i) = $this->{'consume' . $blockType}($lines, $i);
-						if ($block !== false) {
-                            if(is_array($props))
-                                $block = array_merge($block, $props);
-                            
-                            if($this->_depth==1 && $this->splitIntoChapters) {
-                                if($block[0]=='headline' && $block['level']==1) {
-                                    // New chapter
-                                    $blocks[] = [
-                                        'id'=> $block['content'], 
-                                        'content'=>[]
-                                    ];
-                                }
-                                // If there is no chapters yet, ignore this block
-                                if(!empty($blocks)) {
-                                    // Insert this block into last chapter    
-                                    $blocks[count($blocks)-1]['content'][] = $block;
-                                }
-                                
-                            } else {
-                                $blocks[] = $block;
-                            }
-						}
-						$identified = true;
-						break 1;
-					}
-				}
-				// consider the line a normal paragraph
-				if (!$identified) {
-					list($block, $i) = $this->consumeParagraph($lines, $i);
-					if($this->_depth==1 && $this->splitIntoChapters) {
-                        
-                        // If there is no chapters yet, ignore this block
-                        if(!empty($blocks)) {
-                            // Insert this block into last chapter    
-                            $blocks[count($blocks)-1]['content'][] = $block;
-                        }
-
-                    } else {
-                        $blocks[] = $block;
-                    }
-				}
-			}
-		}
-
-		$this->_depth--;
-
-		return $blocks;
+            }
+        }
+        
+        return $result;
 	}
     
     /**
@@ -176,6 +198,13 @@ class LeanpubMarkdown extends MarkdownExtra {
                 
                 $propVal = $matches[1];                
                 $line = ltrim(substr($line, strlen($matches[0])));
+            } else if($line[0]=="'") {
+                // Quoted value
+                if(!preg_match('/^\'(([^\']|\')*)\'\s*/', $line, $matches))
+                    return false;
+                
+                $propVal = $matches[1];                
+                $line = ltrim(substr($line, strlen($matches[0])));
             } else {
                 // Unquoted value
                 if(!preg_match('/^([^\s,]*)\s*/', $line, $matches))
@@ -200,6 +229,30 @@ class LeanpubMarkdown extends MarkdownExtra {
         return $props;
     }
     
+    protected function _renderToc() {
+        
+        $toc = "<ul>\n";
+        foreach ($this->headlines as $headline) {
+            $toc .= $this->_renderTocHeadline($headline);
+        }
+        $toc .= "</ul>\n";
+        $this->toc = $toc;
+    }
+    
+    protected function _renderTocHeadline($headline)
+    {
+        $out = "<li>\n";
+        $out .= "<a href=\"#".$headline['id'].'">' . $this->renderAbsy($headline['content']) . "</a>\n";
+        if(isset($headline['children'])) {
+            foreach($headline['children'] as $childHeadline) {
+                $out .= $this->_renderTocHeadline($childHeadline);
+            }
+        }
+        $out .= "</li>\n";
+        
+        return $out;
+    }
+    
     protected function renderImage($block)
 	{
         if(substr($block['url'], 0, 7)!='http://' && substr($block['url'], 0, 8)!='https://') {
@@ -207,10 +260,12 @@ class LeanpubMarkdown extends MarkdownExtra {
         }
         
 		$out = "<div class=\"image-wrapper\">\n";
+        $out .= "<a target=\"_blank\" href=\"".$block['url']."\">\n";
         $out .= '<img src="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'
 			. ' alt="' . htmlspecialchars($block['text'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8') . '"'
 			. (empty($block['title']) ? '' : ' title="' . htmlspecialchars($block['title'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8') . '"')
 			. ($this->html5 ? '>' : ' />');
+        $out .= "</a>\n";
         if(isset($block['text']))
             $out .= "<div class=\"image-caption\">".htmlspecialchars($block['text'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8')."</div>\n";
         $out .= "</div>\n";
@@ -234,5 +289,25 @@ class LeanpubMarkdown extends MarkdownExtra {
 		return ("<pre class=\"$linenumbers\"><code class=\"$lang\">")
 			. htmlspecialchars($block['content'] . "\n", ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8')
 			. "</code></pre>\n";
+	}
+    
+    protected function renderLink($block)
+	{
+		if (isset($block['refkey'])) {
+			if (($ref = $this->lookupReference($block['refkey'])) !== false) {
+				$block = array_merge($block, $ref);
+			} else {
+				return $block['orig'];
+			}
+		}
+        
+        $url = $block['url'];
+        if($url[0]=='#' && isset($this->elementIds[substr($url, 1)])) {
+            $block['url'] = $this->elementIds[substr($url, 1)] . $url;
+        }
+        
+		return '<a href="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'
+			. (empty($block['title']) ? '' : ' title="' . htmlspecialchars($block['title'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8') . '"')
+			. '>' . $this->renderAbsy($block['text']) . '</a>';
 	}
 }

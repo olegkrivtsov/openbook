@@ -116,6 +116,10 @@ ol {
     margin-bottom: 15px;
 }
 
+strong {
+    font-weight: bold;
+}
+
 em {
     font-style: italic;
 }

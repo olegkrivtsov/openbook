@@ -83,19 +83,29 @@ class BookGenerator
             
             foreach ($data as $chapter) {
                 $chapterId = $chapter['id'];
-                $chapterId = strtolower(preg_replace('/[^\w\d]/', '_', $chapterId));
+                $chapterTitle = $chapter['title'];
                 $chapterContent = $chapter['content'];
                 
                 $phpRenderer = new PhpRenderer();
                 
                 $vars = [
                     'bookTitle' => 'Using Zend Framework 3',
-                    'pageTitle' => $chapterId,
+                    'pageTitle' => $chapterTitle,
                     'content' => $chapterContent
                 ];
                 
                 $html = $phpRenderer->render(__DIR__ . "/../../data/layout/chapter.php", $vars);
-                $outFile = $this->bookDir . "preview/$chapterId.html";
+                $outFile = $this->bookDir . "preview/$chapterId";
+                file_put_contents($outFile, $html);
+                
+                $vars = [
+                    'bookTitle' => 'Using Zend Framework 3',
+                    'pageTitle' => 'Table of Contents',
+                    'content' => $parser->toc
+                ];
+                
+                $html = $phpRenderer->render(__DIR__ . "/../../data/layout/index.php", $vars);
+                $outFile = $this->bookDir . "preview/index.html";
                 file_put_contents($outFile, $html);
             }
             

@@ -1,6 +1,6 @@
 {
     "require": {
-        "cebe/markdown": "~1.0.1"
+        "cebe/markdown": "dev-master"
     },
     "autoload": {
         "psr-4": {"OpenBook\\": "src/OpenBook"}
