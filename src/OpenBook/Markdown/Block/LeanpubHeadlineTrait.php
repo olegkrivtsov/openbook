@@ -42,7 +42,7 @@ trait LeanpubHeadlineTrait
             $id = $matches[1];
             $line = substr($line, 0, strlen($line)-strlen($matches[0]));
         } else {
-            $id = 'header.' . ++$this->headerIdSeed;
+            $id = 'header-' . ++$this->headerIdSeed;
         }
         
         $block = [

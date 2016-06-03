@@ -7,6 +7,8 @@ class BookGenerator
 {
     protected $bookDir;
     
+    protected $bookProps = [];
+    
     protected $filesToCopy = [];
                 
     public function generate($dirName)
@@ -19,10 +21,24 @@ class BookGenerator
         
         $this->bookDir = $dirName;
         
+        $this->getBookProps();
+        
         $this->parseBookFile();
     }
     
-    private function parseBookFile()
+    protected function getBookProps() 
+    {
+        $fileName = $this->bookDir . 'openbook.json';
+        $json = file_get_contents($fileName);
+        
+        $bookProps = json_decode($json, true);
+        if(!is_array($bookProps))
+            throw new \Exception("$fileName is not in JSON format");
+        
+        $this->bookProps = $bookProps;
+    }
+    
+    protected function parseBookFile()
     {
         $bookFile = $this->bookDir . 'manuscript/Book.txt';
         
@@ -89,7 +105,7 @@ class BookGenerator
                 $phpRenderer = new PhpRenderer();
                 
                 $vars = [
-                    'bookTitle' => 'Using Zend Framework 3',
+                    'bookTitle' => $this->bookProps['book_title'],
                     'pageTitle' => $chapterTitle,
                     'content' => $chapterContent
                 ];
@@ -99,8 +115,8 @@ class BookGenerator
                 file_put_contents($outFile, $html);
                 
                 $vars = [
-                    'bookTitle' => 'Using Zend Framework 3',
-                    'pageTitle' => 'Table of Contents',
+                    'bookTitle' => $this->bookProps['book_title'],
+                    'pageTitle' => $this->bookProps['book_title'],
                     'content' => $parser->toc
                 ];
                 
