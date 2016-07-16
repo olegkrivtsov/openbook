@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title><?php echo $this->pageTitle; ?></title>
-<link href="css/style.css" type="text/css" rel="stylesheet" />
+<link href="assets/css/style.css" type="text/css" rel="stylesheet" />
 </head>
 <header>
     <div class="header">

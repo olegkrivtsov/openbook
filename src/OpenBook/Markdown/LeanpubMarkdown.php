@@ -23,8 +23,6 @@ class LeanpubMarkdown extends Markdown
     use \OpenBook\Markdown\Inline\FootnoteLinkTrait;
     use \OpenBook\Markdown\Inline\SuperscriptTrait;
 
-    public $splitIntoChapters = false;
-
     /**
      * Images
      * @var array 
@@ -82,59 +80,8 @@ class LeanpubMarkdown extends Markdown
 
         $absy = $this->parseBlocks(explode("\n", $text));
 
-        if ($this->splitIntoChapters) {
-
-            // Split absy into chapters
-            $chapters = [];
-            foreach ($absy as $block) {
-                if ($block[0] == 'leanpubHeadline' && $block['level'] == 1) {
-                    // Add new chapter
-                    $chapterTitle = $this->renderAbsy($block['content']);
-                    $chapterId = strtolower(preg_replace('/[^\w\d]/', '_', $chapterTitle));
-                    $chapterId .= '.html';
-                    $chapters[] = [
-                        'id' => $chapterId,
-                        'title' => $chapterTitle,
-                        'content' => []
-                    ];
-                }
-
-                if (empty($chapters))
-                    continue;
-
-                $chapters[count($chapters) - 1]['content'][] = $block;
-                
-                $block = $result[0];
-                if ($block[0] == 'leanpubHeadline') {
-                    $level = $block['level'];
-
-                    if ($level == 1) {
-                        $this->headlines[] = $block;
-                        $this->curHeadlines = [count($this->headlines) - 1, -1, -1, -1, -1, -1];
-                    } else if ($level == 2) {
-
-                    }
-                }
-            }
-
-            // Render each chapter
-            $markup = [];
-            foreach ($chapters as $chapter) {
-                $markup[] = [
-                    'id' => $chapter['id'],
-                    'title' => $chapter['title'],
-                    'content' => $this->renderAbsy($chapter['content'])
-                ];
-            }
-
-            // Render Table of Contents
-            $this->_renderToc();
-        } else {
-            $markup = $this->renderAbsy($absy);
-        }
-
         $this->cleanup();
-        return $markup;
+        return $absy;
     }
 
     protected function parseBlock($lines, $current) 
@@ -232,7 +179,6 @@ class LeanpubMarkdown extends Markdown
 
     protected function _renderToc() 
     {
-
         $toc = "<ul>\n";
         foreach ($this->headlines as $headline) {
             $toc .= $this->_renderTocHeadline($headline);

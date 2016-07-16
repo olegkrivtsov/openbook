@@ -3,30 +3,34 @@ namespace OpenBook;
 
 class Application
 {
-    const STATUS_OK = 0;
-    const STATUS_ERROR = 1;
-    
     public function run($argc, $argv)
     {
-        $status = self::STATUS_OK;
-        
+        // Parse command-line arguments
         try {
-            //if($argc!=2)
-            //    throw new \Exception ('Invalid argument count.');
+            if($argc!=2)
+                throw new \Exception('Invalid argument count passed.');
+            
+            $dirName = $argv[1];
+            
+        } catch (\Exception $ex) {
+            $this->printUsage();
+            echo "Error: " . $ex->getMessage() . "\n";
+            return 1;
+        }
         
-            $dirName = '/home/oleg/share/using-zend-framework-3';//$argv[1];
+        // Generate the book HTML
+        try {
+            
             $generator = new \OpenBook\BookGenerator();
             $generator->generate($dirName);
                 
         } catch (\Exception $ex) {
-            $status = self::STATUS_ERROR;
             echo "Error: " . $ex->getMessage() . "\n";
+            return 1;
         }
         
-        if($status!=self::STATUS_OK)
-            $this->printUsage();
-        
-        return $status; 
+        echo "Done!\n";
+        return 0;
     }
     
     public function printUsage()
