@@ -28,7 +28,29 @@ class BookGenerator
      * @var type 
      */
     protected $filesToCopy = [];
-                
+    
+    /**
+     * PHP renderer.
+     * @var type 
+     */
+    private $phpRenderer;
+    
+    /**
+     * Markdown parser.
+     * @var type 
+     */
+    private $markdownParser;
+    
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->phpRenderer = new PhpRenderer();
+        
+        $this->markdownParser = new LeanpubMarkdown();
+    }
+    
     /**
      * Generates the book in HTML format. 
      */
@@ -55,6 +77,9 @@ class BookGenerator
         // Parse manuscript files for each available language
         $this->processLanguages();
         
+        // Generate index.html
+        $this->generateIndex();
+            
         // Get list of asset files
         $themeAssetsDir = 'data/theme/default/assets';
         $assetFiles = $this->getDirContents($themeAssetsDir); 
@@ -62,7 +87,7 @@ class BookGenerator
         foreach ($assetFiles as $fileName) {
             $dstFileName = substr($fileName, strlen($themeAssetsDir));
             $dstFileName = $this->outDir . 'assets/' . $dstFileName;
-            $this->filesToCopy[] = [$fileName, $dstFileName];
+            $this->filesToCopy[$fileName] = $dstFileName;
         }
         
         // Copy asset files to output directory
@@ -116,11 +141,11 @@ class BookGenerator
             // Parse manuscript files
             $mergedMarkdown = $this->mergeManuscriptFiles($langCode, $langName, $manuscriptFiles);
             
-            // Generate index.html
-            $this->generateIndex();
-            
             // Generate chapters
             $this->generateChapters($langCode, $mergedMarkdown);
+            
+            // Generate toc.html
+            $this->generateTableOfContents($langCode);            
         }
     }
     
@@ -193,38 +218,75 @@ class BookGenerator
     {
         echo "Generating chapters in HTML format for language $langCode\n";
         
-        $parser = new LeanpubMarkdown();
-        
-        $parser->parse($markdown);
+        $this->markdownParser->parse($markdown);
         
         // Generate an HTML file per chapter
-        foreach ($parser->chapters as $chapter) {
+        $chapters = $this->markdownParser->chapters;
+        foreach ($chapters as $idx=>$chapter) {
             
             $chapterId = $chapter['id'];
             $chapterTitle = $chapter['title'];
-
-            echo "Generating chapter: $chapterId\n";
-
-            $chapterContent = $parser->render($chapter['content']);
-
-            $phpRenderer = new PhpRenderer();
-
+            $chapterContent = $chapter['content'];
+    
+            $linkPrev = null;
+            if ($idx>0)
+                $linkPrev = $chapters[$idx-1]['id'];
+            
+            $linkNext = null;
+            if ($idx<count($chapters)-1)
+                $linkNext = $chapters[$idx+1]['id'];
+            
             $vars = [
-                'bookTitle' => $this->bookProps['book_title'],
-                'pageTitle' => $chapterTitle,
-                'copyright' => $this->bookProps['copyright'],
-                'content' => $chapterContent
+                'content' => $chapterContent,
+                'linkPrev' => $linkPrev,
+                'linkNext' => $linkNext,
             ];
 
-            $html = $phpRenderer->render("data/theme/default/layout/chapter.php", $vars);
+            $content = $this->phpRenderer->render("data/theme/default/layout/chapter.php", $vars);
 
+            $html = $this->renderMainLayout($content, $chapterTitle, '../');
+            
+            $outFile = $this->outDir . $langCode . "/toc.html";
+            
             if (!is_dir($this->outDir . $langCode)) {
                 mkdir($this->outDir . $langCode, '0775', true);
             }
 
             $outFile = $this->outDir . $langCode . '/' . $chapterId;
+            
+            echo "Generating chapter: $outFile\n";
+            
             file_put_contents($outFile, $html);
+            
+            // Add image files to be copied later
+            foreach ($this->markdownParser->images as $fileName) {
+                $srcFilePath = $this->bookDir . 'manuscript/' . $langCode . '/' . $fileName;
+                $dstFilePath = $this->outDir . $langCode . '/' . $fileName;
+                $this->filesToCopy[$srcFilePath] = $dstFilePath;
+            }
         }       
+    }
+    
+    /**
+     * Generates toc.html file.
+     */
+    protected function generateTableOfContents($langCode)
+    {
+        // Generate toc.html
+        
+        $vars = [
+            'toc' => $this->markdownParser->toc
+        ];
+        
+        $content = $this->phpRenderer->render("data/theme/default/layout/toc.php", $vars);
+
+        $html = $this->renderMainLayout($content, 'Table of Contents', '../');
+        
+        $outFile = $this->outDir . $langCode . "/toc.html";
+        
+        echo "Generating table of contents file: $outFile\n";
+        
+        file_put_contents($outFile, $html);
     }
     
     /**
@@ -232,20 +294,54 @@ class BookGenerator
      */
     protected function generateIndex()
     {
-        echo "Generating index.html\n";
-        
         // Generate index.html
+        
+        $languages = [];
+        
+        foreach ($this->bookProps['languages'] as $langStr)            
+        {
+            $parts = explode(':', $langStr);
+            $langCode = trim($parts[0]);
+            $langName = trim($parts[1]);
+            
+            $languages[$langCode] = $langName;
+        }
+        
         $vars = [
-            'bookTitle' => $this->bookProps['book_title'],
-            'pageTitle' => $this->bookProps['book_title'],            
-            'content' => ''
+            'languages' => $languages
         ];
-
-        $html = $phpRenderer->render("data/theme/default/layout/index.php", $vars);
+        
+        $content = $this->phpRenderer->render("data/theme/default/layout/index.php", $vars);
+        
+        $html = $this->renderMainLayout($content, $this->bookProps['book_title']);
+        
         $outFile = $this->outDir . "index.html";
+        
+        echo "Generating index file: $outFile\n";
+        
         file_put_contents($outFile, $html);
     }
     
+    /**
+     * Renders main layout.
+     */
+    protected function renderMainLayout($content, $pageTitle, $dirPrefix = '')
+    {
+        $vars = [
+            'bookTitle' => $this->bookProps['book_title'],
+            'bookSubtitle' => $this->bookProps['book_subtitle'],
+            'pageTitle' => $pageTitle,
+            'copyright' => $this->bookProps['copyright'],
+            'links' => $this->bookProps['links'],
+            'content' => $content,
+            'dirPrefix' => $dirPrefix
+        ];
+                
+        $html = $this->phpRenderer->render("data/theme/default/layout/main.php", $vars);
+        
+        return $html;
+    }
+
     /**
      * Copies asset files to output directory.
      */
@@ -254,13 +350,13 @@ class BookGenerator
         echo "Copying files\n";
         
         $count = 0;
-        foreach ($this->filesToCopy as $file) {
-            if(!is_dir(dirname($file[1])))
-                mkdir(dirname($file[1]), '775', true);
-            if(!is_readable($file[0])) {
-                echo 'Error copying file: ' . $file[0] . "\n";
-            } else if(copy($file[0], $file[1])) {
-                echo "Copied file: " . $file[0] ."\n";
+        foreach ($this->filesToCopy as $srcFile=>$dstFile) {
+            if(!is_dir(dirname($dstFile)))
+                mkdir(dirname($dstFile), '775', true);
+            if(!is_readable($srcFile)) {
+                echo 'Error copying file: ' . $srcFile . "\n";
+            } else if(copy($srcFile, $dstFile)) {
+                echo "Copied file " . $srcFile . " to " . $dstFile . "\n";
                 $count ++;
             }
         }

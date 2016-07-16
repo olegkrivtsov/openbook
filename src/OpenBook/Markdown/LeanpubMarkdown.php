@@ -33,7 +33,13 @@ class LeanpubMarkdown extends Markdown
      * Table of contents
      * @var array 
      */
-    public $toc = [];
+    public $toc;
+    
+    /**
+     * Chapters.
+     * @var type 
+     */
+    public $chapters = [];
 
     /**
      * @inheritDoc
@@ -69,7 +75,11 @@ class LeanpubMarkdown extends Markdown
     public function parse($text) 
     {
         $this->prepare();
-
+        $this->chapters = [];
+        $this->toc = '';
+        $this->headlines = [];
+        $this->images = [];
+        
         if (empty($text)) {
             return '';
         }
@@ -80,8 +90,54 @@ class LeanpubMarkdown extends Markdown
 
         $absy = $this->parseBlocks(explode("\n", $text));
 
+        // Split absy into chapters
+        $chapters = [];
+        foreach ($absy as $block) {
+            if ($block[0] == 'leanpubHeadline' && $block['level'] == 1) {
+                // Add new chapter
+                $chapterTitle = $this->renderAbsy($block['content']);
+                $chapterId = preg_replace('/[^\w\d]/u', '_', $chapterTitle);
+                $chapterId .= '.html';
+                $chapters[] = [
+                    'id' => $chapterId,
+                    'title' => $chapterTitle,
+                    'content' => []
+                ];
+                
+                $this->curChapterId = $chapterId;
+            }                       
+            
+            if (empty($chapters))
+                continue;
+            
+            $chapters[count($chapters) - 1]['content'][] = $block;
+            
+            if ($block[0] == 'leanpubHeadline') {
+                $level = $block['level'];
+                $block['chapterId'] = $this->curChapterId;
+
+                $this->_updateToc($block, $this->headlines, $level);
+            }
+        }
+        
+        // Render each chapter
+        $markup = [];
+        foreach ($chapters as $chapter) {
+            $markup[] = [
+                'id' => $chapter['id'],
+                'title' => $chapter['title'],
+                'content' => $this->renderAbsy($chapter['content'])
+            ];
+        }
+        
+        // Render Table of Contents
+        $this->toc = $this->_renderToc($this->headlines);
+        
         $this->cleanup();
-        return $absy;
+        
+        $this->chapters = $markup;
+        
+        return $markup;
     }
 
     protected function parseBlock($lines, $current) 
@@ -101,6 +157,8 @@ class LeanpubMarkdown extends Markdown
         if (is_array($props) && is_array($result)) {
             $result = [array_merge($result[0], $props), $result[1]];
         }
+        
+        $block = $result[0];        
 
         return $result;
     }
@@ -177,24 +235,36 @@ class LeanpubMarkdown extends Markdown
         return $props;
     }
 
-    protected function _renderToc() 
+    protected function _updateToc($block, &$headlines, $level)
+    {
+        if($level==1) {
+            $headlines[] = $block;
+        } else {
+            $last = count($headlines)-1;
+            if (!isset($headlines[$last]['children']))
+                $headlines[$last]['children'] = [];
+            
+            $this->_updateToc($block, $headlines[$last]['children'], --$level);
+        }
+    }
+    
+    protected function _renderToc($headlines) 
     {
         $toc = "<ul>\n";
-        foreach ($this->headlines as $headline) {
+        foreach ($headlines as $headline) {
             $toc .= $this->_renderTocHeadline($headline);
         }
         $toc .= "</ul>\n";
-        $this->toc = $toc;
+        
+        return $toc;
     }
 
     protected function _renderTocHeadline($headline) 
     {
         $out = "<li>\n";
-        $out .= "<a href=\"#" . $headline['id'] . '">' . $this->renderAbsy($headline['content']) . "</a>\n";
-        if (isset($headline['children'])) {
-            foreach ($headline['children'] as $childHeadline) {
-                $out .= $this->_renderTocHeadline($childHeadline);
-            }
+        $out .= "<a href=\"" . $headline['chapterId'] . ($headline['level']!=1?"#" . $headline['id']:'') . '">' . $this->renderAbsy($headline['content']) . "</a>\n";
+        if (isset($headline['children']) && count($headline['children'])!=0) {
+            $out .= $this->_renderToc($headline['children']);            
         }
         $out .= "</li>\n";
 
