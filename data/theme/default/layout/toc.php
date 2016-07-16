@@ -6,7 +6,6 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-    $.jstree.defaults.core.themes.variant = "large";
     $('#toc').jstree({
         "core" : {
           "themes" : {

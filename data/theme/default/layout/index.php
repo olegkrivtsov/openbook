@@ -1,6 +1,11 @@
 <div class="language-selection">
-    <h1>Read this book in:</h1>
 
+    <?php if(strlen($this->bookCoverImage)!=0): ?>
+    <img id="book-cover" alt="<?= $this->bookTitle ?>" src="<?= $this->bookCoverImage ?>">
+    <?php endif; ?>
+    
+    <h1>Read this book in:</h1>
+    
     <ul class="language-list">
     <?php foreach ($this->languages as $langCode=>$langTitle): ?>
         <li>
@@ -8,4 +13,5 @@
         </li>
     <?php endforeach; ?>
     </ul>
-</div>    
+
+</div>

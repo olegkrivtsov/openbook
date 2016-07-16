@@ -129,12 +129,8 @@ class BookGenerator
         
         $languages = $this->bookProps['languages'];
         
-        foreach ($languages as $langStr)            
+        foreach ($languages as $langCode=>$langName)            
         {
-            $parts = explode(':', $langStr);
-            $langCode = trim($parts[0]);
-            $langName = trim($parts[1]);
-            
             // Parse 'manuscript/Book.txt' file
             $manuscriptFiles = $this->parseBookFile($langCode);        
             
@@ -296,19 +292,18 @@ class BookGenerator
     {
         // Generate index.html
         
-        $languages = [];
-        
-        foreach ($this->bookProps['languages'] as $langStr)            
-        {
-            $parts = explode(':', $langStr);
-            $langCode = trim($parts[0]);
-            $langName = trim($parts[1]);
-            
-            $languages[$langCode] = $langName;
+        $bookCoverImage = $this->bookDir . 'manuscript/title_page.png';
+        if (!is_readable($bookCoverImage)) {
+            $bookCoverImage = null;
+        } else {
+            $this->filesToCopy[$bookCoverImage] = $this->outDir . 'title_page.png';
+            $bookCoverImage = 'title_page.png';
         }
         
         $vars = [
-            'languages' => $languages
+            'bookTitle' => $this->bookProps['book_title'],
+            'bookCoverImage' => $bookCoverImage,
+            'languages' => $this->bookProps['languages']
         ];
         
         $content = $this->phpRenderer->render("data/theme/default/layout/index.php", $vars);
