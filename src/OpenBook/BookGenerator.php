@@ -201,7 +201,7 @@ class BookGenerator
             $fileContentWithoutBOM = str_replace("\xEF\xBB\xBF", '', $fileContent);
             
             // Merge content
-            $mergedContent .= $fileContentWithoutBOM;            
+            $mergedContent .= $fileContentWithoutBOM . "\n\n";            
         }
         
         return $mergedContent;

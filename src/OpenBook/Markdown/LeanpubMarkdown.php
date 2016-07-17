@@ -70,8 +70,6 @@ class LeanpubMarkdown extends Markdown
     
     protected $headlines = [];
     
-    protected $curHeadlines = [-1, -1, -1, -1, -1, -1];
-
     public function parse($text) 
     {
         $this->prepare();
@@ -79,6 +77,7 @@ class LeanpubMarkdown extends Markdown
         $this->toc = '';
         $this->headlines = [];
         $this->images = [];
+        $this->elementIds = [];
         
         if (empty($text)) {
             return '';
@@ -118,6 +117,10 @@ class LeanpubMarkdown extends Markdown
 
                 $this->_updateToc($block, $this->headlines, $level);
             }
+            
+            if (isset($block['id']))
+                $this->elementIds[$block['id']] = $this->curChapterId;
+            
         }
         
         // Render each chapter
@@ -151,6 +154,10 @@ class LeanpubMarkdown extends Markdown
         // identify block type for this line
         $blockType = $this->detectLineType($lines, $current);
 
+        if ($blockType=='leanpubTable') {
+            echo "a";
+        }
+        
         // call consume method for the detected block type to consume further lines
         $result = $this->{'consume' . $blockType}($lines, $current);
 
@@ -159,7 +166,7 @@ class LeanpubMarkdown extends Markdown
         }
         
         $block = $result[0];        
-
+                
         return $result;
     }
 
@@ -296,7 +303,7 @@ class LeanpubMarkdown extends Markdown
         if (isset($block['lang']))
             $lang = 'language-' . $block['lang'];
         else
-            $lang = '';
+            $lang = 'language-text';
 
         if (isset($block['line-numbers']) && $block['line-numbers'] == 'on')
             $linenumbers = 'line-numbers';

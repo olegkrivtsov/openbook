@@ -51,7 +51,7 @@
 
 <div id="disqus_thread"></div>
 
-<script src="js/prism.js"></script>
+<script src="../assets/js/prism.js"></script>
 <script>
 var disqus_config = function () {
 this.page.url = window.location.href; // Replace PAGE_URL with your page's canonical URL variable
