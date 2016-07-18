@@ -72,7 +72,7 @@ trait LeanpubTableTrait {
                 break;
             }
 
-            if (preg_match('/^\|[-\|]+\|$/', $line)) {
+            if (preg_match('/^\s*\|[-\|]+\|\s*$/', $line)) {
                 if ($multiLineRows == false) {
                     // Merge previous tbody rows into the single one
                     $row2 = array_fill(0, count($block['rows'][0]), '');
@@ -143,8 +143,8 @@ trait LeanpubTableTrait {
 
         $content .= "<tbody>\n";
         $rowCount = count($block['rows']);
-        if ($block['hasHeader'])
-            $rowCount--;
+        //if ($block['hasHeader'])
+        //    $rowCount--;
         if ($block['hasFooter'])
             $rowCount--;
 

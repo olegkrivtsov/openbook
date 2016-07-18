@@ -36,6 +36,12 @@ class LeanpubMarkdown extends Markdown
     public $toc;
     
     /**
+     * True if current chapter belongs to mainmatter.
+     * @var type 
+     */
+    public $isMainmatter;
+    
+    /**
      * Chapters.
      * @var type 
      */
@@ -66,6 +72,8 @@ class LeanpubMarkdown extends Markdown
     
     protected $curChapterId = '';
     
+    protected $curChapterNumber;
+    
     protected $elementIds = [];
     
     protected $headlines = [];
@@ -78,6 +86,8 @@ class LeanpubMarkdown extends Markdown
         $this->headlines = [];
         $this->images = [];
         $this->elementIds = [];
+        $this->isMainmatter = false;
+        $this->curChapterNumber = 0;
         
         if (empty($text)) {
             return '';
@@ -92,6 +102,16 @@ class LeanpubMarkdown extends Markdown
         // Split absy into chapters
         $chapters = [];
         foreach ($absy as $block) {
+            
+            if ($block[0] == 'xmatter')
+            {
+                if ($block['type']=='mainmatter') {
+                    $this->isMainmatter = true;
+                } else {
+                    $this->isMainmatter = false;
+                }                
+            }
+            
             if ($block[0] == 'leanpubHeadline' && $block['level'] == 1) {
                 // Add new chapter
                 $chapterTitle = $this->renderAbsy($block['content']);
@@ -104,23 +124,24 @@ class LeanpubMarkdown extends Markdown
                 ];
                 
                 $this->curChapterId = $chapterId;
+                
+                if($this->isMainmatter)
+                    $this->curChapterNumber++;
             }                       
             
             if (empty($chapters))
                 continue;
-            
-            $chapters[count($chapters) - 1]['content'][] = $block;
-            
+                                    
             if ($block[0] == 'leanpubHeadline') {
-                $level = $block['level'];
+                $level = $block['level'];                
                 $block['chapterId'] = $this->curChapterId;
-
-                $this->_updateToc($block, $this->headlines, $level);
+                $block['number'] = $this->_updateToc($block, $this->headlines, $level);
             }
             
             if (isset($block['id']))
                 $this->elementIds[$block['id']] = $this->curChapterId;
             
+            $chapters[count($chapters) - 1]['content'][] = $block;
         }
         
         // Render each chapter
@@ -242,17 +263,36 @@ class LeanpubMarkdown extends Markdown
         return $props;
     }
 
-    protected function _updateToc($block, &$headlines, $level)
+    protected function _updateToc($block, &$headlines, $level, $depth=1, $number='')
     {
-        if($level==1) {
-            $headlines[] = $block;
-        } else {
+        if ($depth<$level) {
             $last = count($headlines)-1;
             if (!isset($headlines[$last]['children']))
                 $headlines[$last]['children'] = [];
             
-            $this->_updateToc($block, $headlines[$last]['children'], --$level);
+            if ($depth==1)
+                $number = $this->curChapterNumber . '.';
+            else
+                $number .= count($headlines) . '.';
+            
+            $number = $this->_updateToc($block, $headlines[$last]['children'], $level, ++$depth, $number);           
+            
+        } else {
+            if ($depth==1)
+                $number = $this->curChapterNumber . '.';
+            else
+                $number .= count($headlines)+1 . '.';
+            
+            if ($this->isMainmatter)
+                $block['number'] = $number;
+            
+            $headlines[] = $block;
         }
+        
+        if ($this->isMainmatter)
+            return $number;
+        
+        return '';
     }
     
     protected function _renderToc($headlines) 
@@ -269,7 +309,8 @@ class LeanpubMarkdown extends Markdown
     protected function _renderTocHeadline($headline) 
     {
         $out = "<li>\n";
-        $out .= "<a href=\"" . $headline['chapterId'] . ($headline['level']!=1?"#" . $headline['id']:'') . '">' . $this->renderAbsy($headline['content']) . "</a>\n";
+        $out .= "<a href=\"" . $headline['chapterId'] . ($headline['level']!=1?"#" 
+             . $headline['id']:'') . '">' . (isset($headline['number'])?$headline['number']:'') . ' ' . $this->renderAbsy($headline['content']) . "</a>\n";
         if (isset($headline['children']) && count($headline['children'])!=0) {
             $out .= $this->_renderToc($headline['children']);            
         }
@@ -334,6 +375,13 @@ class LeanpubMarkdown extends Markdown
         return '<a href="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'
                 . (empty($block['title']) ? '' : ' title="' . htmlspecialchars($block['title'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8') . '"')
                 . '>' . $this->renderAbsy($block['text']) . '</a>';
+    }
+    
+    protected function renderLeanpubHeadline($block)
+    {
+        $tag = 'h' . $block['level'];
+        return "<$tag id=\"".$block['id']."\">" . (isset($block['number'])?$block['number']:'') . ' ' 
+                . $this->renderAbsy($block['content']) . "</$tag>\n";
     }
 
 }

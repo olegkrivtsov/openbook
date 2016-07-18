@@ -5,8 +5,10 @@
 <title><?php echo $this->pageTitle; ?></title>
 <link href="<?= $this->dirPrefix ?>assets/css/jstree/style.min.css" type="text/css" rel="stylesheet"/>
 <link href="<?= $this->dirPrefix ?>assets/css/style.css" type="text/css" rel="stylesheet" />
+<link href="<?= $this->dirPrefix ?>assets/css/prism.css" type="text/css" rel="stylesheet" />
 <script src="<?= $this->dirPrefix ?>assets/js/jquery.min.js"></script>
 <script src="<?= $this->dirPrefix ?>assets/js/jstree.min.js"></script>
+
 </head>
 <header>
     <div class="header">
