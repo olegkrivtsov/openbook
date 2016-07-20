@@ -21,6 +21,16 @@
     </div>    
 </div>
 
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Using Zend Framework 3 Book - Chapter -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-3933778336056438"
+     data-ad-slot="8999085928"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 <!-- Chapter content -->
 <div id="container">
 <?php echo $this->content; ?>        
@@ -48,6 +58,16 @@
         <?php endif; ?>
     </div>    
 </div>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Using Zend Framework 3 Book - Chapter Bottom -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-3933778336056438"
+     data-ad-slot="7382751925"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
 <div id="disqus_thread"></div>
 

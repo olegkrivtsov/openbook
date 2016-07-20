@@ -174,10 +174,6 @@ class LeanpubMarkdown extends Markdown
 
         // identify block type for this line
         $blockType = $this->detectLineType($lines, $current);
-
-        if ($blockType=='leanpubTable') {
-            echo "a";
-        }
         
         // call consume method for the detected block type to consume further lines
         $result = $this->{'consume' . $blockType}($lines, $current);
@@ -308,9 +304,15 @@ class LeanpubMarkdown extends Markdown
 
     protected function _renderTocHeadline($headline) 
     {
+        $id = isset($headline['id'])?$headline['id']:'';
+        $level = isset($headline['level'])?$headline['level']:'';
+        $number = isset($headline['number'])?$headline['number']:'';
+        $chapterId = isset($headline['chapterId'])?$headline['chapterId']:'';
+        $content = isset($headline['content'])?$headline['content']:'';
+        
         $out = "<li>\n";
-        $out .= "<a href=\"" . $headline['chapterId'] . ($headline['level']!=1?"#" 
-             . $headline['id']:'') . '">' . (isset($headline['number'])?$headline['number']:'') . ' ' . $this->renderAbsy($headline['content']) . "</a>\n";
+        $out .= "<a href=\"" . $chapterId . ($level!=1?"#".$headline['id']:'') . '">' 
+             . $number . ' ' . $this->renderAbsy($content) . "</a>\n";
         if (isset($headline['children']) && count($headline['children'])!=0) {
             $out .= $this->_renderToc($headline['children']);            
         }

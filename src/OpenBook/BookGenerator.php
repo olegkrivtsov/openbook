@@ -271,6 +271,8 @@ class BookGenerator
         // Generate toc.html
         
         $vars = [
+            'languages' => $this->bookProps['languages'],
+            'currentLanguage' => $langCode,
             'toc' => $this->markdownParser->toc
         ];
         
