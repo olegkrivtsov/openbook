@@ -192,7 +192,7 @@ blockquote.question {
     max-width: 800px;
     width: 100%;
     display: inline-block;
-    padding: 10px 0px;
+    padding: 10px 5px;
     text-align: left;
 }
 
@@ -228,13 +228,13 @@ blockquote.question {
 
 .navigation {
     max-width: 800px;
-    margin: 15px auto;
+    margin: 5px auto 25px auto;
     border-radius: 5px;
 }
 
 .navigation div {
     display: inline-block;
-    width: 32%;
+    width: 32%;    
 }
 
 .navigation div img {
@@ -292,8 +292,14 @@ div.generated-by {
     color: #999;
 }
 
-img {
-    max-width: 800px;    
+div.image-wrapper a {
+    text-align: center;
+}
+
+div.image-wrapper a img {
+    max-width: 100%; 
+    display:inline-block; 
+    height: auto;
 }
 
 .image-wrapper {

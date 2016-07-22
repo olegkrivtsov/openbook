@@ -22,11 +22,12 @@
 </div>
 
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Using Zend Framework 3 Book - Chapter -->
+<!-- Using Zend Framework 3 Book - Chapter - Adaptive -->
 <ins class="adsbygoogle"
-     style="display:inline-block;width:728px;height:90px"
+     style="display:block"
      data-ad-client="ca-pub-3933778336056438"
-     data-ad-slot="8999085928"></ins>
+     data-ad-slot="4531860323"
+     data-ad-format="auto"></ins>
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
@@ -58,16 +59,6 @@
         <?php endif; ?>
     </div>    
 </div>
-
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Using Zend Framework 3 Book - Chapter Bottom -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:728px;height:90px"
-     data-ad-client="ca-pub-3933778336056438"
-     data-ad-slot="7382751925"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
 
 <div id="disqus_thread"></div>
 
