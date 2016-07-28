@@ -13,7 +13,6 @@ namespace OpenBook\Markdown\Block;
  */
 trait LeanpubFootnoteTrait 
 {
-
     /**
      * identify a line as the beginning of a footnote block
      */
@@ -97,6 +96,7 @@ trait LeanpubFootnoteTrait
                 'content' => $content,
             ];
         }
+                
         return [$block, $i];
     }
 
@@ -126,6 +126,5 @@ trait LeanpubFootnoteTrait
             $output .= '<li id="fn:' . $item['backref'] . '">' . $itemLineOutput . "</li>\n";
         }
         return '<footnotes>' . $output . "</ol></footnotes>\n";
-    }
-
+    }    
 }

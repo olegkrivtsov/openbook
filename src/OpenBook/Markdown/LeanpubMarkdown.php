@@ -78,6 +78,10 @@ class LeanpubMarkdown extends Markdown
     
     protected $headlines = [];
     
+    protected $footnotes = [];
+    
+    protected $footnoteNum = 1;
+    
     public function parse($text) 
     {
         $this->prepare();
@@ -88,6 +92,8 @@ class LeanpubMarkdown extends Markdown
         $this->elementIds = [];
         $this->isMainmatter = false;
         $this->curChapterNumber = 0;
+        $this->footnotes = [];
+        $this->footnoteNum = 1;
         
         if (empty($text)) {
             return '';
@@ -138,8 +144,14 @@ class LeanpubMarkdown extends Markdown
                 $block['number'] = $this->_updateToc($block, $this->headlines, $level);
             }
             
+            if ($block[0] == 'footnote') {
+                $block['num'] = $this->footnoteNum;
+                $this->footnotes[] = $block;                
+                $this->footnoteNum += count($block['items']);
+            }
+            
             if (isset($block['id']))
-                $this->elementIds[$block['id']] = $this->curChapterId;
+                $this->elementIds[$block['id']] = [$this->curChapterId, $block];
             
             $chapters[count($chapters) - 1]['content'][] = $block;
         }
@@ -370,8 +382,14 @@ class LeanpubMarkdown extends Markdown
         }
 
         $url = $block['url'];
-        if ($url[0] == '#' && isset($this->elementIds[substr($url, 1)])) {
-            $block['url'] = $this->elementIds[substr($url, 1)] . $url;
+        $id = substr($url, 1);
+        if ($url[0] == '#' && isset($this->elementIds[$id])) {
+            if ($this->elementIds[$id][1][0]=='leanpubHeadline' && $this->elementIds[$id][1]['level']==1)
+                $url = $this->elementIds[$id][0];
+            else
+                $url = $this->elementIds[$id][0] . $url;
+            
+            $block['url'] = $url;
         }
 
         return '<a href="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'
@@ -386,4 +404,45 @@ class LeanpubMarkdown extends Markdown
                 . $this->renderAbsy($block['content']) . "</$tag>\n";
     }
 
+    protected function renderFootnote($block) 
+    {
+        $output = "<ol class=\"footnotes\" start=\"" . $block['num'] . "\">\n";
+        
+        foreach ($block['items'] as $item) {
+            $backlink = '';
+            if (!empty($item['backref'])) {
+                $backlink = '&nbsp;<a href="#fnref:' . $item['backref'] . '" rev="footnote" class="footnote-backref" title="Jump back to footnote ' . $item['backref'] . ' in the text">&#8617;</a>';
+            }
+            $itemLineOutput = trim($this->renderAbsy($item['content']));
+            if (!empty($backlink) && preg_match('/<\/p>$/', $itemLineOutput)) {
+                $itemLineOutput = substr($itemLineOutput, 0, -4) . $backlink . '</p>';
+            }
+            $output .= '<li id="fn:' . $item['backref'] . '">' . $itemLineOutput . "</li>\n";
+        }
+        return '<footnotes>' . $output . "</ol></footnotes>\n";
+    }
+    
+    protected function renderFootnoteLink($block)
+    {
+        $footnoteId = $block[1];
+        $num = 0;
+        $found = false;
+        foreach ($this->footnotes as $footnote) {
+            foreach ($footnote['items'] as $item) {
+                $num ++;
+                if ($item['backref']==$footnoteId) {
+                    $found = true;
+                    break;
+                }
+            }
+            if ($found)
+                break;
+        }
+        
+        if (!$found)
+            $num = '?';
+        
+        $text = htmlspecialchars($block[1], ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        return '<sup id="fnref:' . $text . '"><a href="#fn:' . $text . '" class="footnote-ref" rel="footnote">' . $num . '</a></sup>';
+    }
 }

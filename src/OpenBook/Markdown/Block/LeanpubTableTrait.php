@@ -107,7 +107,9 @@ trait LeanpubTableTrait {
                 $block['rows'][] = $cells;
             else {
                 for ($k = 0; $k < count($cells); $k++) {
-                    $block['rows'][count($block['rows']) - 1][$k] .= ' ' . $cells[$k];
+                    if(isset($block['rows'][count($block['rows']) - 1][$k])) {
+                        $block['rows'][count($block['rows']) - 1][$k] .= ' ' . $cells[$k];
+                    }
                 }
             }
 
