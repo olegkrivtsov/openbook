@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title><?php echo $this->pageTitle; ?></title>
+<link href="<?= $this->dirPrefix ?>favicon.ico" rel="shortcut icon" type="image/ico" />
 <link href="<?= $this->dirPrefix ?>assets/css/jstree/style.min.css" type="text/css" rel="stylesheet"/>
 <link href="<?= $this->dirPrefix ?>assets/css/prism.css" type="text/css" rel="stylesheet" />
 <link href="<?= $this->dirPrefix ?>assets/css/style.css" type="text/css" rel="stylesheet" />

@@ -1,7 +1,12 @@
 <div class="language-selection">
 
+    <?php 
+    foreach ($this->languages as $firstLangCode=>$firstLangName) { break; }
+    ?>
     <?php if(strlen($this->bookCoverImage)!=0): ?>
-    <img id="book-cover" alt="<?= $this->bookTitle ?>" src="<?= $this->bookCoverImage ?>">
+    <a href="<?= $firstLangCode . '/toc.html' ?>">
+        <img id="book-cover" alt="<?= $this->bookTitle ?>" src="<?= $this->bookCoverImage ?>">
+    </a>
     <?php endif; ?>
     
     <h1>Read this book in:</h1>

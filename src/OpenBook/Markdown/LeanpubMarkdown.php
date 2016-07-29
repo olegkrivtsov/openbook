@@ -147,7 +147,7 @@ class LeanpubMarkdown extends Markdown
             if ($block[0] == 'footnote') {
                 $block['num'] = $this->footnoteNum;
                 $this->footnotes[] = $block;                
-                $this->footnoteNum += count($block['items']);
+                $this->footnoteNum ++;
             }
             
             if (isset($block['id']))
@@ -406,20 +406,11 @@ class LeanpubMarkdown extends Markdown
 
     protected function renderFootnote($block) 
     {
-        $output = "<ol class=\"footnotes\" start=\"" . $block['num'] . "\">\n";
+        $number = "<sup>" . $block['num'] . ")</sup> ";
+        $text = $this->renderAbsy($block['content']);
+        $text = substr_replace($text, $number, 3, 0);
         
-        foreach ($block['items'] as $item) {
-            $backlink = '';
-            if (!empty($item['backref'])) {
-                $backlink = '&nbsp;<a href="#fnref:' . $item['backref'] . '" rev="footnote" class="footnote-backref" title="Jump back to footnote ' . $item['backref'] . ' in the text">&#8617;</a>';
-            }
-            $itemLineOutput = trim($this->renderAbsy($item['content']));
-            if (!empty($backlink) && preg_match('/<\/p>$/', $itemLineOutput)) {
-                $itemLineOutput = substr($itemLineOutput, 0, -4) . $backlink . '</p>';
-            }
-            $output .= '<li id="fn:' . $item['backref'] . '">' . $itemLineOutput . "</li>\n";
-        }
-        return '<footnotes>' . $output . "</ol></footnotes>\n";
+        return '<footnotes id="fn:' . $block['id'] . '">' . $text . "</footnotes>\n";
     }
     
     protected function renderFootnoteLink($block)
@@ -428,15 +419,11 @@ class LeanpubMarkdown extends Markdown
         $num = 0;
         $found = false;
         foreach ($this->footnotes as $footnote) {
-            foreach ($footnote['items'] as $item) {
-                $num ++;
-                if ($item['backref']==$footnoteId) {
-                    $found = true;
-                    break;
-                }
-            }
-            if ($found)
+            $num ++;
+            if ($footnote['id']==$footnoteId) {
+                $found = true;
                 break;
+            }            
         }
         
         if (!$found)

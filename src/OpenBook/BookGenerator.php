@@ -90,6 +90,11 @@ class BookGenerator
             $this->filesToCopy[$fileName] = $dstFileName;
         }
         
+        $faviconImage = $this->bookDir . 'manuscript/favicon.ico';
+        if (is_readable($bookCoverImage)) {
+            $this->filesToCopy[$faviconImage] = $this->outDir . 'favicon.ico';
+        }
+        
         // Copy asset files to output directory
         $this->copyFiles();
     }
