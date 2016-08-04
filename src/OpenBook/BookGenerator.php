@@ -91,7 +91,7 @@ class BookGenerator
         }
         
         $faviconImage = $this->bookDir . 'manuscript/favicon.ico';
-        if (is_readable($bookCoverImage)) {
+        if (is_readable($faviconImage)) {
             $this->filesToCopy[$faviconImage] = $this->outDir . 'favicon.ico';
         }
         
@@ -315,7 +315,7 @@ class BookGenerator
         
         $content = $this->phpRenderer->render("data/theme/default/layout/index.php", $vars);
         
-        $html = $this->renderMainLayout($content, $this->bookProps['book_title']);
+        $html = $this->renderMainLayout($content, null);
         
         $outFile = $this->outDir . "index.html";
         
@@ -332,6 +332,7 @@ class BookGenerator
         $vars = [
             'bookTitle' => $this->bookProps['book_title'],
             'bookSubtitle' => $this->bookProps['book_subtitle'],
+            'keywords' => implode(',', $this->bookProps['keywords']),
             'pageTitle' => $pageTitle,
             'copyright' => $this->bookProps['copyright'],
             'links' => $this->bookProps['links'],

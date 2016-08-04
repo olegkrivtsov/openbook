@@ -2,14 +2,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title><?php echo $this->pageTitle; ?></title>
+<meta charset="UTF-8">
+<meta name="description" content="<?= $this->bookSubtitle ?>">
+<meta name="keywords" content="<?= $this->keywords ?>">
+<meta name="author" content="<?= $this->copyright ?>">
+<meta name=viewport content="width=device-width, initial-scale=1">
 <link href="<?= $this->dirPrefix ?>favicon.ico" rel="shortcut icon" type="image/ico" />
 <link href="<?= $this->dirPrefix ?>assets/css/jstree/style.min.css" type="text/css" rel="stylesheet"/>
 <link href="<?= $this->dirPrefix ?>assets/css/prism.css" type="text/css" rel="stylesheet" />
 <link href="<?= $this->dirPrefix ?>assets/css/style.css" type="text/css" rel="stylesheet" />
 <script src="<?= $this->dirPrefix ?>assets/js/jquery.min.js"></script>
 <script src="<?= $this->dirPrefix ?>assets/js/jstree.min.js"></script>
-
+<title>
+    <?= strlen($this->pageTitle)!=0?($this->pageTitle . ' -- ' . $this->bookTitle):$this->bookTitle; ?>
+</title>
 </head>
 <header>
     <div class="header">
@@ -20,14 +26,16 @@
             <div class="book-subtitle">
                 <?php echo $this->bookSubtitle; ?>
             </div>
-            <div class="menu">
-                <?php foreach ($this->links as $linkText=>$linkUrl): ?>
-                <div class="link">
-                    <a href="<?= $linkUrl ?>"><?= $linkText ?></a>
+            <nav>
+                <div class="menu">
+                    <?php foreach ($this->links as $linkText=>$linkUrl): ?>
+                    <div class="link">
+                        <a href="<?= $linkUrl ?>"><?= $linkText ?></a>
+                    </div>
+                    <?php endforeach; ?>
+
                 </div>
-                <?php endforeach; ?>
-                
-            </div>
+            </nav>
         </div>    
     </div>
 </header>    
