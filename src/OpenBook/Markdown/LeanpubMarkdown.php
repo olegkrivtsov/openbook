@@ -339,7 +339,7 @@ class LeanpubMarkdown extends Markdown
             $this->images[$block['url']] = $block['url'];
         }
 
-        $out = "<div class=\"image-wrapper\">\n";
+        $out = "<span class=\"image-wrapper\">\n";
         $out .= "<a target=\"_blank\" href=\"" . $block['url'] . "\">\n";
         $out .= '<img src="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'
                 . ' alt="' . htmlspecialchars($block['text'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8') . '"'
@@ -347,8 +347,8 @@ class LeanpubMarkdown extends Markdown
                 . ($this->html5 ? '>' : ' />');
         $out .= "</a>\n";
         if (isset($block['text']))
-            $out .= "<div class=\"image-caption\">" . htmlspecialchars($block['text'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8') . "</div>\n";
-        $out .= "</div>\n";
+            $out .= "<span class=\"image-caption\">" . htmlspecialchars($block['text'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8') . "</span>\n";
+        $out .= "</span>\n";
 
         return $out;
     }

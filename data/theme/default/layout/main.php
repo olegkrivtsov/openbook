@@ -1,22 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="<?= $this->langCode ?>">
 <head>
 <meta charset="UTF-8">
 <meta name="description" content="<?= $this->bookSubtitle ?>">
 <meta name="keywords" content="<?= $this->keywords ?>">
 <meta name="author" content="<?= $this->copyright ?>">
-<meta name=viewport content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="<?= $this->dirPrefix ?>favicon.ico" rel="shortcut icon" type="image/ico" />
-<link href="<?= $this->dirPrefix ?>assets/css/jstree/style.min.css" type="text/css" rel="stylesheet"/>
-<link href="<?= $this->dirPrefix ?>assets/css/prism.css" type="text/css" rel="stylesheet" />
+<?php foreach ($this->externalStylesheets as $stylesheetPath): ?>
+<link rel="preload" href="<?= $this->dirPrefix . $stylesheetPath ?>" as="style" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="<?= $this->dirPrefix . $stylesheetPath ?>"></noscript>
+<?php endforeach; ?>
 <link href="<?= $this->dirPrefix ?>assets/css/style.css" type="text/css" rel="stylesheet" />
-<script src="<?= $this->dirPrefix ?>assets/js/jquery.min.js"></script>
-<script src="<?= $this->dirPrefix ?>assets/js/jstree.min.js"></script>
-<title>
-    <?= strlen($this->pageTitle)!=0?($this->pageTitle . ' -- ' . $this->bookTitle):$this->bookTitle; ?>
-</title>
+<title><?= strlen($this->pageTitle)!=0?($this->pageTitle . ' -- ' . $this->bookTitle):$this->bookTitle; ?></title>
 </head>
+<body>
 <header>
     <div class="header">
         <div class="header-body">
@@ -39,7 +37,6 @@
         </div>    
     </div>
 </header>    
-<body>
 <div id="container">
 <?php echo $this->content; ?>        
 </div>
@@ -55,16 +52,29 @@
         </div>    
     </div>
 </footer>
+
+<script src="<?= $this->dirPrefix ?>assets/js/jquery.min.js"></script>
+<script src="<?= $this->dirPrefix ?>assets/js/cssrelpreload.js"></script>
+
+<?php foreach ($this->externalScripts as $scriptPath): ?>
+<script src="<?= $this->dirPrefix . $scriptPath ?>"></script>
+<?php endforeach; ?>
+
+<?php foreach ($this->inlineScripts as $script): ?>
+<?= $script ?>
+<?php endforeach; ?>
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-80824388-1', 'auto');
+  ga('create', '<?= $this->bookProps['google_analytics']['account_id'] ?>', 'auto');
   ga('send', 'pageview');
 
 </script>
+
 </body>
 </html>    
 

@@ -219,6 +219,9 @@ class BookGenerator
     {
         echo "Generating chapters in HTML format for language $langCode\n";
         
+        $upperAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_upper_ad']);
+        $lowerAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_bottom_ad']);
+        
         $this->markdownParser->parse($markdown);
         
         // Generate an HTML file per chapter
@@ -241,11 +244,15 @@ class BookGenerator
                 'content' => $chapterContent,
                 'linkPrev' => $linkPrev,
                 'linkNext' => $linkNext,
+                'upperAdContent' => $upperAdContent,
+                'lowerAdContent' => $lowerAdContent,
+                'bookProps' => $this->bookProps
             ];
 
+            $this->phpRenderer->clearVars();
             $content = $this->phpRenderer->render("data/theme/default/layout/chapter.php", $vars);
 
-            $html = $this->renderMainLayout($content, $chapterTitle, '../');
+            $html = $this->renderMainLayout($content, $chapterTitle, '../', $langCode);
             
             $outFile = $this->outDir . $langCode . "/toc.html";
             
@@ -278,12 +285,14 @@ class BookGenerator
         $vars = [
             'languages' => $this->bookProps['languages'],
             'currentLanguage' => $langCode,
-            'toc' => $this->markdownParser->toc
+            'toc' => $this->markdownParser->toc,
+            'bookProps' => $this->bookProps
         ];
         
+        $this->phpRenderer->clearVars();
         $content = $this->phpRenderer->render("data/theme/default/layout/toc.php", $vars);
 
-        $html = $this->renderMainLayout($content, 'Table of Contents', '../');
+        $html = $this->renderMainLayout($content, 'Table of Contents', '../', $langCode);
         
         $outFile = $this->outDir . $langCode . "/toc.html";
         
@@ -310,9 +319,11 @@ class BookGenerator
         $vars = [
             'bookTitle' => $this->bookProps['book_title'],
             'bookCoverImage' => $bookCoverImage,
-            'languages' => $this->bookProps['languages']
+            'languages' => $this->bookProps['languages'],
+            'bookProps' => $this->bookProps
         ];
         
+        $this->phpRenderer->clearVars();
         $content = $this->phpRenderer->render("data/theme/default/layout/index.php", $vars);
         
         $html = $this->renderMainLayout($content, null);
@@ -327,7 +338,7 @@ class BookGenerator
     /**
      * Renders main layout.
      */
-    protected function renderMainLayout($content, $pageTitle, $dirPrefix = '')
+    protected function renderMainLayout($content, $pageTitle, $dirPrefix = '', $langCode = 'en')
     {
         $vars = [
             'bookTitle' => $this->bookProps['book_title'],
@@ -337,7 +348,9 @@ class BookGenerator
             'copyright' => $this->bookProps['copyright'],
             'links' => $this->bookProps['links'],
             'content' => $content,
-            'dirPrefix' => $dirPrefix
+            'dirPrefix' => $dirPrefix,
+            'bookProps' => $this->bookProps,
+            'langCode' => $langCode
         ];
                 
         $html = $this->phpRenderer->render("data/theme/default/layout/main.php", $vars);

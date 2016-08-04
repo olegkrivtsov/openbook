@@ -1,4 +1,3 @@
-
 <div class="language-selection-small">
 This book is available in: 
 <?php foreach ($this->languages as $langCode=>$langName): ?>
@@ -16,6 +15,10 @@ This book is available in:
 <?php echo $this->toc; ?>        
 </div>
 
+<?php
+$this->externalStylesheets[] = 'assets/css/jstree/style.min.css';
+$this->externalScripts[] = 'assets/js/jstree.min.js';
+$this->inlineScripts[] = <<<EOT
 <script type="text/javascript">
 $(document).ready(function(){
     $('#toc').jstree({
@@ -33,5 +36,7 @@ $(document).ready(function(){
         var href = data.node.a_attr.href;
         document.location.href = href;
       }); 
-});    
+});
 </script>
+EOT;
+?>
