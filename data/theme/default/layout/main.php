@@ -7,12 +7,8 @@
 <meta name="author" content="<?= $this->copyright ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="<?= $this->dirPrefix ?>favicon.ico" rel="shortcut icon" type="image/ico" />
-<?php foreach ($this->externalStylesheets as $stylesheetPath): ?>
-<link rel="preload" href="<?= $this->dirPrefix . $stylesheetPath ?>" as="style" onload="this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="<?= $this->dirPrefix . $stylesheetPath ?>"></noscript>
-<?php endforeach; ?>
 <link href="<?= $this->dirPrefix ?>assets/css/style.css" type="text/css" rel="stylesheet" />
-<title><?= strlen($this->pageTitle)!=0?($this->pageTitle . ' -- ' . $this->bookTitle):$this->bookTitle; ?></title>
+<title><?= strlen($this->pageTitle)!=0?($this->pageTitle . ' -- ' . $this->bookTitle):($this->bookTitle . ' -- ' . $this->bookSubtitle); ?></title>
 </head>
 <body>
 <header>
@@ -53,8 +49,10 @@
     </div>
 </footer>
 
+<a href="#0" class="cd-top">Top</a>
+
 <script src="<?= $this->dirPrefix ?>assets/js/jquery.min.js"></script>
-<script src="<?= $this->dirPrefix ?>assets/js/cssrelpreload.js"></script>
+<script src="<?= $this->dirPrefix ?>assets/js/loadCSS.js"></script>
 
 <?php foreach ($this->externalScripts as $scriptPath): ?>
 <script src="<?= $this->dirPrefix . $scriptPath ?>"></script>
@@ -63,6 +61,43 @@
 <?php foreach ($this->inlineScripts as $script): ?>
 <?= $script ?>
 <?php endforeach; ?>
+
+<script>
+<?php foreach ($this->externalStylesheets as $stylesheetPath): ?>
+loadCSS("<?= $this->dirPrefix . $stylesheetPath ?>");
+<?php endforeach; ?>
+</script>
+
+<script>
+jQuery(document).ready(function($){
+    // browser window scroll (in pixels) after which the "back to top" link is shown
+    var offset = 300,
+    //browser window scroll (in pixels) after which the "back to top" link opacity is reduced
+    offset_opacity = 1200,
+    //duration of the top scrolling animation (in ms)
+    scroll_top_duration = 700,
+    //grab the "back to top" link
+    $back_to_top = $('.cd-top');
+
+    //hide or show the "back to top" link
+    $(window).scroll(function(){
+            ( $(this).scrollTop() > offset ) ? $back_to_top.addClass('cd-is-visible') : $back_to_top.removeClass('cd-is-visible cd-fade-out');
+            if( $(this).scrollTop() > offset_opacity ) { 
+                    $back_to_top.addClass('cd-fade-out');
+            }
+    });
+
+    //smooth scroll to top
+    $back_to_top.on('click', function(event){
+            event.preventDefault();
+            $('body,html').animate({
+                    scrollTop: 0 ,
+                    }, scroll_top_duration
+            );
+    });
+
+});
+</script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

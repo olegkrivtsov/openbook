@@ -3,19 +3,19 @@
     <div class="prev-chapter">
     <?php if ($this->linkPrev): ?>    
         <a href="<?= $this->linkPrev ?>">
-            <img alt="Previous Chapter" src="../assets/images/left.png"><span>Previous</span>
+            <img alt="Previous Chapter" src="../assets/images/left.png"><span class="nav-btn-text">Previous</span>
         </a>
     <?php endif; ?>
     </div>    
     <div class="contents">
         <a href="toc.html">
-            <img alt="Contents" src="../assets/images/book.png"><span>Contents</span>
+            <img alt="Contents" src="../assets/images/book.png"><span class="nav-btn-text">Contents</span>
         </a>
     </div>
     <div class="next-chapter">
         <?php if ($this->linkNext): ?>
         <a href="<?= $this->linkNext ?>">
-            <span>Next</span><img alt="Next Chapter" src="../assets/images/right.png">
+            <span class="nav-btn-text">Next</span><img alt="Next Chapter" src="../assets/images/right.png">
         </a>
         <?php endif; ?>
     </div>    
@@ -25,6 +25,14 @@
 
 <!-- Chapter content -->
 <div id="chapter_content">
+<?php 
+if (isset($this->bookProps['incomplete_translations']) && in_array($this->langCode, $this->bookProps['incomplete_translations'])): ?>
+<div class="incomplete-translation">
+    Translation into this language is not yet finished. You can help this project 
+    by translating the chapters and contributing your changes.
+</div>
+<?php endif; ?>
+
 <?php echo $this->content; ?>        
 </div>
 
@@ -40,19 +48,19 @@
     <div class="prev-chapter">
     <?php if ($this->linkPrev): ?>    
         <a href="<?= $this->linkPrev ?>">
-            <img alt="Previous Chapter" src="../assets/images/left.png"><span>Previous</span>
+            <img alt="Previous Chapter" src="../assets/images/left.png"><span class="nav-btn-text">Previous</span>
         </a>
     <?php endif; ?>
     </div>    
     <div class="contents">
         <a href="toc.html">
-            <img alt="Contents" src="../assets/images/book.png"><span>Contents</span>
+            <img alt="Contents" src="../assets/images/book.png"><span class="nav-btn-text">Contents</span>
         </a>
     </div>
     <div class="next-chapter">
         <?php if ($this->linkNext): ?>
         <a href="<?= $this->linkNext ?>">
-            <span>Next</span><img alt="Next Chapter" src="../assets/images/right.png">
+            <span class="nav-btn-text">Next</span><img alt="Next Chapter" src="../assets/images/right.png">
         </a>
         <?php endif; ?>
     </div>    

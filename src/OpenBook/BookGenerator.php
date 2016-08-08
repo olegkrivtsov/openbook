@@ -246,7 +246,8 @@ class BookGenerator
                 'linkNext' => $linkNext,
                 'upperAdContent' => $upperAdContent,
                 'lowerAdContent' => $lowerAdContent,
-                'bookProps' => $this->bookProps
+                'bookProps' => $this->bookProps,
+                'langCode' => $langCode
             ];
 
             $this->phpRenderer->clearVars();
