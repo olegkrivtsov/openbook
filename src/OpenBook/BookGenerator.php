@@ -2,6 +2,7 @@
 namespace OpenBook;
 
 use OpenBook\Markdown\LeanpubMarkdown;
+use OpenBook\SitemapGenerator;
 
 class BookGenerator
 {
@@ -42,12 +43,17 @@ class BookGenerator
     private $markdownParser;
     
     /**
+     * URLs for site map.
+     * @var type 
+     */
+    private $siteUrls = [];
+    
+    /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->phpRenderer = new PhpRenderer();
-        
+        $this->phpRenderer = new PhpRenderer();        
         $this->markdownParser = new LeanpubMarkdown();
     }
     
@@ -79,7 +85,10 @@ class BookGenerator
         
         // Generate index.html
         $this->generateIndex();
-            
+        
+        // Generate sitemap.xml.
+        $this->generateSiteMap();
+        
         // Get list of asset files
         $themeAssetsDir = 'data/theme/default/assets';
         $assetFiles = $this->getDirContents($themeAssetsDir); 
@@ -267,6 +276,8 @@ class BookGenerator
             
             file_put_contents($outFile, $html);
             
+            $this->siteUrls[] = [$this->bookProps['book_website'] . '/' . $langCode . '/' . $chapterId, 0.5];
+            
             // Add image files to be copied later
             foreach ($this->markdownParser->images as $fileName) {
                 $srcFilePath = $this->bookDir . 'manuscript/' . $langCode . '/' . $fileName;
@@ -300,6 +311,8 @@ class BookGenerator
         echo "Generating table of contents file: $outFile\n";
         
         file_put_contents($outFile, $html);
+        
+        $this->siteUrls[] = [$this->bookProps['book_website'] . '/' . $langCode . '/toc.html', 1.0];
     }
     
     /**
@@ -334,6 +347,26 @@ class BookGenerator
         echo "Generating index file: $outFile\n";
         
         file_put_contents($outFile, $html);
+        
+        array_unshift($this->siteUrls, [$this->bookProps['book_website'] . '/index.html', 1.0]);
+    }
+    
+    /**
+     * Generates the sitemap.xml file.
+     */
+    protected function generateSiteMap()
+    {
+        echo "Generating sitemap.xml\n";
+        
+        $baseURL = $this->bookProps['book_website'];
+        $siteMapGenerator = new SitemapGenerator($baseURL, $this->outDir);
+        
+        foreach ($this->siteUrls as $urlInfo) {
+            $siteMapGenerator->addUrl($urlInfo[0], date('c'), 'monthly', $urlInfo[1]);
+        }
+        
+        $siteMapGenerator->createSitemap();
+        $siteMapGenerator->writeSitemap();
     }
     
     /**
