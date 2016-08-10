@@ -18,7 +18,7 @@ trait LeanpubFootnoteTrait
      */
     protected function identifyLeanpubFootnote($line) 
     {
-        return preg_match('/^\[\^(\w+?)\]:/', $line);
+        return preg_match('/^\[\^(.+?)\]:/', $line);
     }
 
     /**
@@ -33,7 +33,7 @@ trait LeanpubFootnoteTrait
             $line = $lines[$i];
             
             if ($id=='') {
-                if (preg_match('/^\[\^(\w+?)\]:[ \t]+/', $line, $matches)) {
+                if (preg_match('/^\[\^(.+?)\]:[ \t]+/', $line, $matches)) {
                     $id = $matches[1];
                     $str = substr($line, strlen($matches[0]));
                     $content[] = $str;
