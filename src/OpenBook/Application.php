@@ -29,7 +29,9 @@ class Application
             return 1;
         }
         
-        echo "Done!\n";
+        $numWarnings = count($generator->getWarnings());
+        
+        echo "Done (0 errors; $numWarnings warnings)\n";
         return 0;
     }
     

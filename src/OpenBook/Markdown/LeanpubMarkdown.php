@@ -23,6 +23,8 @@ class LeanpubMarkdown extends Markdown
     use \OpenBook\Markdown\Inline\FootnoteLinkTrait;
     use \OpenBook\Markdown\Inline\SuperscriptTrait;
 
+    public $warnings = [];
+    
     /**
      * Images
      * @var array 
@@ -85,6 +87,7 @@ class LeanpubMarkdown extends Markdown
     public function parse($text) 
     {
         $this->prepare();
+        $this->warnings = [];
         $this->chapters = [];
         $this->toc = '';
         $this->headlines = [];
@@ -383,13 +386,17 @@ class LeanpubMarkdown extends Markdown
 
         $url = $block['url'];
         $id = substr($url, 1);
-        if ($url[0] == '#' && isset($this->elementIds[$id])) {
-            if ($this->elementIds[$id][1][0]=='leanpubHeadline' && $this->elementIds[$id][1]['level']==1)
-                $url = $this->elementIds[$id][0];
-            else
-                $url = $this->elementIds[$id][0] . $url;
-            
-            $block['url'] = $url;
+        if ($url[0] == '#') {
+            if (isset($this->elementIds[$id])) {
+                if ($this->elementIds[$id][1][0]=='leanpubHeadline' && $this->elementIds[$id][1]['level']==1)
+                    $url = $this->elementIds[$id][0];
+                else
+                    $url = $this->elementIds[$id][0] . $url;
+
+                $block['url'] = $url;
+            } else {
+                $this->warnings[] = "The hyperlink '$url' refers to not existing element with ID = '$id'";
+            }
         }
 
         return '<a href="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'

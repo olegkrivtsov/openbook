@@ -7,6 +7,12 @@ use OpenBook\SitemapGenerator;
 class BookGenerator
 {
     /**
+     * List of warnings.
+     * @var type 
+     */
+    protected $warnings = [];
+    
+    /**
      * Directory where book files are located.
      * @var type 
      */
@@ -58,10 +64,29 @@ class BookGenerator
     }
     
     /**
+     * Returns the list of warnings.
+     * @return type
+     */
+    public function getWarnings() 
+    {
+        return $this->warnings;
+    }
+    
+    /**
+     * Adds a message to log.
+     */
+    protected function log($msg)
+    {
+        echo $msg;
+    }
+    
+    /**
      * Generates the book in HTML format. 
      */
     public function generate($dirName)
     {
+        $this->warnings = [];
+        
         // Append slash to dir name, if not exists.
         if(substr($dirName, -1)!='/')
             $dirName .= '/';
@@ -70,7 +95,7 @@ class BookGenerator
         if(!is_dir($dirName))
             throw new \Exception("Passed argument is not a directory: $dirName\n");
         
-        echo "Starting book generation\n";
+        $this->log("Starting book generation\n");
         
         // Save directory name.
         $this->bookDir = $dirName;
@@ -113,7 +138,7 @@ class BookGenerator
      */
     protected function getBookProps() 
     {
-        echo "Reading openbook.json file\n";
+        $this->log("Reading openbook.json file\n");
         
         $fileName = $this->bookDir . 'openbook.json';
         
@@ -166,7 +191,7 @@ class BookGenerator
     {
         $bookFile = $this->bookDir . "manuscript/$langCode/Book.txt";
         
-        echo "Parsing book file $bookFile\n";
+        $this->log("Parsing book file $bookFile\n");
                         
         if(!is_readable($bookFile))
             throw new \Exception("$bookFile doesn't exist or is not readable.");
@@ -193,7 +218,7 @@ class BookGenerator
      */
     protected function mergeManuscriptFiles($langCode, $langName, $manuscriptFiles)
     {
-        echo "Merging manuscript files for language '$langCode' ($langName)\n";
+        $this->log("Merging manuscript files for language '$langCode' ($langName)\n");
         
         $mergedContent = '';
         
@@ -204,7 +229,7 @@ class BookGenerator
             if(!is_readable($filePath)) 
                 throw new \Exception("Could not read file $filePath");
             
-            echo "Reading file: $filePath\n";
+            $this->log("Reading file: $filePath\n");
             
             $fileContent = file_get_contents($filePath);
             if($fileContent===false) {
@@ -226,12 +251,18 @@ class BookGenerator
      */
     protected function generateChapters($langCode, $markdown)
     {
-        echo "Generating chapters in HTML format for language $langCode\n";
+        $this->log("Generating chapters in HTML format for language $langCode\n");
         
         $upperAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_upper_ad']);
         $lowerAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_bottom_ad']);
         
         $this->markdownParser->parse($markdown);
+        
+        foreach ($this->markdownParser->warnings as $warning) {
+            $this->log('Warning: '. $warning . "\n");
+        }
+        
+        $this->warnings = array_merge($this->warnings, $this->markdownParser->warnings);
         
         // Generate an HTML file per chapter
         $chapters = $this->markdownParser->chapters;
@@ -272,7 +303,7 @@ class BookGenerator
 
             $outFile = $this->outDir . $langCode . '/' . $chapterId;
             
-            echo "Generating chapter: $outFile\n";
+            $this->log("Generating chapter: $outFile\n");
             
             file_put_contents($outFile, $html);
             
@@ -308,7 +339,7 @@ class BookGenerator
         
         $outFile = $this->outDir . $langCode . "/toc.html";
         
-        echo "Generating table of contents file: $outFile\n";
+        $this->log("Generating table of contents file: $outFile\n");
         
         file_put_contents($outFile, $html);
         
@@ -344,7 +375,7 @@ class BookGenerator
         
         $outFile = $this->outDir . "index.html";
         
-        echo "Generating index file: $outFile\n";
+        $this->log("Generating index file: $outFile\n");
         
         file_put_contents($outFile, $html);
         
@@ -356,7 +387,7 @@ class BookGenerator
      */
     protected function generateSiteMap()
     {
-        echo "Generating sitemap.xml\n";
+        $this->log("Generating sitemap.xml\n");
         
         $baseURL = $this->bookProps['book_website'];
         $siteMapGenerator = new SitemapGenerator($baseURL, $this->outDir);
@@ -397,21 +428,22 @@ class BookGenerator
      */
     protected function copyFiles()
     {
-        echo "Copying files\n";
+        $this->log("Copying files\n");
         
         $count = 0;
         foreach ($this->filesToCopy as $srcFile=>$dstFile) {
             if(!is_dir(dirname($dstFile)))
                 mkdir(dirname($dstFile), '775', true);
             if(!is_readable($srcFile)) {
-                echo 'Error copying file: ' . $srcFile . "\n";
+                $this->warnings[] = 'Failed to copy file: ' . $srcFile;
+                $this->log('Failed to copy file: ' . $srcFile . "\n");
             } else if(copy($srcFile, $dstFile)) {
-                echo "Copied file " . $srcFile . " to " . $dstFile . "\n";
+                $this->log("Copied file " . $srcFile . " to " . $dstFile . "\n");
                 $count ++;
             }
         }
         
-        echo "$count files copied.\n";
+        $this->log("$count files copied.\n");
     }
     
     /**
