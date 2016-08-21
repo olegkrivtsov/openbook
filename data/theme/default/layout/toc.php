@@ -15,6 +15,12 @@ This book is available in:
 <?php echo $this->toc; ?>        
 </div>
 
+<div id="toc-ads">
+<?= $this->tocAdContent ?>
+</div>
+
+<div class="clear"></div>
+
 <?php
 $this->externalStylesheets[] = 'assets/css/jstree/style.min.css';
 $this->externalScripts[] = 'assets/js/jstree.min.js';

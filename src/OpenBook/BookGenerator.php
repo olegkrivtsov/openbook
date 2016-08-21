@@ -325,11 +325,14 @@ class BookGenerator
     {
         // Generate toc.html
         
+        $tocAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['contents_ad']);
+        
         $vars = [
             'languages' => $this->bookProps['languages'],
             'currentLanguage' => $langCode,
             'toc' => $this->markdownParser->toc,
-            'bookProps' => $this->bookProps
+            'bookProps' => $this->bookProps,
+            'tocAdContent' => $tocAdContent
         ];
         
         $this->phpRenderer->clearVars();
