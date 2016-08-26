@@ -2,20 +2,20 @@
 <div class="navigation">
     <div class="prev-chapter">
     <?php if ($this->linkPrev): ?>    
-        <a href="<?= $this->linkPrev ?>">
-            <img alt="Previous Chapter" src="../assets/images/left.png"><span class="nav-btn-text">Previous</span>
+        <a href="<?= $this->langDirPrefix ?><?= $this->linkPrev ?>">
+            <img alt="Previous Chapter" src="<?= $this->dirPrefix ?>assets/images/left.png"><span class="nav-btn-text">Previous</span>
         </a>
     <?php endif; ?>
     </div>    
     <div class="contents">
-        <a href="toc.html">
-            <img alt="Contents" src="../assets/images/book.png"><span class="nav-btn-text">Contents</span>
+        <a href="<?= $this->langDirPrefix ?>toc.html">
+            <img alt="Contents" src="<?= $this->dirPrefix ?>assets/images/book.png"><span class="nav-btn-text">Contents</span>
         </a>
     </div>
     <div class="next-chapter">
         <?php if ($this->linkNext): ?>
-        <a href="<?= $this->linkNext ?>">
-            <span class="nav-btn-text">Next</span><img alt="Next Chapter" src="../assets/images/right.png">
+        <a href="<?= $this->langDirPrefix ?><?= $this->linkNext ?>">
+            <span class="nav-btn-text">Next</span><img alt="Next Chapter" src="<?= $this->dirPrefix ?>assets/images/right.png">
         </a>
         <?php endif; ?>
     </div>    
@@ -47,20 +47,20 @@ if (isset($this->bookProps['incomplete_translations']) && in_array($this->langCo
 <div class="navigation">
     <div class="prev-chapter">
     <?php if ($this->linkPrev): ?>    
-        <a href="<?= $this->linkPrev ?>">
-            <img alt="Previous Chapter" src="../assets/images/left.png"><span class="nav-btn-text">Previous</span>
+        <a href="<?= $this->langDirPrefix ?><?= $this->linkPrev ?>">
+            <img alt="Previous Chapter" src="<?= $this->dirPrefix ?>assets/images/left.png"><span class="nav-btn-text">Previous</span>
         </a>
     <?php endif; ?>
     </div>    
     <div class="contents">
-        <a href="toc.html">
-            <img alt="Contents" src="../assets/images/book.png"><span class="nav-btn-text">Contents</span>
+        <a href="<?= $this->langDirPrefix ?>toc.html">
+            <img alt="Contents" src="<?= $this->dirPrefix ?>assets/images/book.png"><span class="nav-btn-text">Contents</span>
         </a>
     </div>
     <div class="next-chapter">
         <?php if ($this->linkNext): ?>
-        <a href="<?= $this->linkNext ?>">
-            <span class="nav-btn-text">Next</span><img alt="Next Chapter" src="../assets/images/right.png">
+        <a href="<?= $this->langDirPrefix ?><?= $this->linkNext ?>">
+            <span class="nav-btn-text">Next</span><img alt="Next Chapter" src="<?= $this->dirPrefix ?>assets/images/right.png">
         </a>
         <?php endif; ?>
     </div>    

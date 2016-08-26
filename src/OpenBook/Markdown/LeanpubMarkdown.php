@@ -44,10 +44,10 @@ class LeanpubMarkdown extends Markdown
     public $isMainmatter;
     
     /**
-     * Chapters.
+     * Chapters/sections.
      * @var type 
      */
-    public $chapters = [];
+    public $outFiles = [];
 
     /**
      * @inheritDoc
@@ -73,8 +73,10 @@ class LeanpubMarkdown extends Markdown
     ];
     
     protected $curChapterId = '';
-    
+          
     protected $curChapterNumber;
+    
+    protected $curSectionId = '';
     
     protected $elementIds = [];
     
@@ -88,13 +90,15 @@ class LeanpubMarkdown extends Markdown
     {
         $this->prepare();
         $this->warnings = [];
-        $this->chapters = [];
+        $this->outFiles = [];
         $this->toc = '';
         $this->headlines = [];
         $this->images = [];
         $this->elementIds = [];
         $this->isMainmatter = false;
         $this->curChapterNumber = 0;
+        $this->curChapterId = '';
+        $this->curSectionId = '';
         $this->footnotes = [];
         $this->footnoteNum = 1;
         
@@ -109,7 +113,7 @@ class LeanpubMarkdown extends Markdown
         $absy = $this->parseBlocks(explode("\n", $text));
 
         // Split absy into chapters
-        $chapters = [];
+        $outFiles = [];
         foreach ($absy as $block) {
             
             if ($block[0] == 'xmatter')
@@ -125,25 +129,42 @@ class LeanpubMarkdown extends Markdown
                 // Add new chapter
                 $chapterTitle = $this->renderAbsy($block['content']);
                 $chapterId = preg_replace('/[^\w\d]/u', '_', $chapterTitle);
-                $chapterId .= '.html';
-                $chapters[] = [
+                
+                $outFiles[] = [
                     'id' => $chapterId,
                     'title' => $chapterTitle,
                     'content' => []
                 ];
                 
                 $this->curChapterId = $chapterId;
+                $this->curSectionId = '';
                 
                 if($this->isMainmatter)
                     $this->curChapterNumber++;
-            }                       
+            }     
             
-            if (empty($chapters))
+            if ($block[0] == 'leanpubHeadline' && $block['level'] == 2) {
+                // Add new section
+                $sectionTitle = $this->renderAbsy($block['content']);
+                $sectionId = preg_replace('/[^\w\d]/u', '_', $sectionTitle);
+                
+                $this->curSectionId = $sectionId;
+                
+                $outFiles[] = [
+                    'id' => $sectionId,
+                    'chapter_id' => $this->curChapterId,
+                    'title' => $sectionTitle,
+                    'content' => []
+                ];
+            }
+            
+            if (empty($outFiles))
                 continue;
                                     
             if ($block[0] == 'leanpubHeadline') {
                 $level = $block['level'];                
                 $block['chapterId'] = $this->curChapterId;
+                $block['sectionId'] = $this->curSectionId;
                 $block['number'] = $this->_updateToc($block, $this->headlines, $level);
             }
             
@@ -154,18 +175,22 @@ class LeanpubMarkdown extends Markdown
             }
             
             if (isset($block['id']))
-                $this->elementIds[$block['id']] = [$this->curChapterId, $block];
+                $this->elementIds[$block['id']] = [$this->curChapterId, $this->curSectionId, $block];
             
-            $chapters[count($chapters) - 1]['content'][] = $block;
+            $outFiles[count($outFiles) - 1]['content'][] = $block;
         }
         
-        // Render each chapter
+        // Render each chapter/section
         $markup = [];
-        foreach ($chapters as $chapter) {
+        foreach ($outFiles as $outFile) {
+            
+            $this->curChapterId = isset($outFile['chapter_id'])?$outFile['chapter_id']:$outFile['id'];
+            $this->curSectionId = isset($outFile['chapter_id'])?$outFile['id']:null;
+            
             $markup[] = [
-                'id' => $chapter['id'],
-                'title' => $chapter['title'],
-                'content' => $this->renderAbsy($chapter['content'])
+                'id' => isset($outFile['chapter_id'])?$outFile['chapter_id'].'/'.$outFile['id'].'.html':$outFile['id'].'.html',
+                'title' => $outFile['title'],
+                'content' => $this->renderAbsy($outFile['content'])
             ];
         }
         
@@ -174,7 +199,7 @@ class LeanpubMarkdown extends Markdown
         
         $this->cleanup();
         
-        $this->chapters = $markup;
+        $this->outFiles = $markup;
         
         return $markup;
     }
@@ -323,10 +348,11 @@ class LeanpubMarkdown extends Markdown
         $level = isset($headline['level'])?$headline['level']:'';
         $number = isset($headline['number'])?$headline['number']:'';
         $chapterId = isset($headline['chapterId'])?$headline['chapterId']:'';
+        $sectionId = isset($headline['sectionId'])?$headline['sectionId']:'';
         $content = isset($headline['content'])?$headline['content']:'';
         
         $out = "<li>\n";
-        $out .= "<a href=\"" . $chapterId . ($level!=1?"#".$headline['id']:'') . '">' 
+        $out .= "<a href=\"" . ($level==1?$chapterId.'.html':$chapterId.'/'.$sectionId.'.html') . ($level>2?"#".$headline['id']:'') . '">' 
              . $number . ' ' . $this->renderAbsy($content) . "</a>\n";
         if (isset($headline['children']) && count($headline['children'])!=0) {
             $out .= $this->_renderToc($headline['children']);            
@@ -340,6 +366,9 @@ class LeanpubMarkdown extends Markdown
     {
         if (substr($block['url'], 0, 7) != 'http://' && substr($block['url'], 0, 8) != 'https://') {
             $this->images[$block['url']] = $block['url'];
+            
+            if ($this->curSectionId!=null)
+                $block['url'] = '../' . $block['url'];
         }
 
         $out = "<span class=\"image-wrapper\">\n";
@@ -388,10 +417,16 @@ class LeanpubMarkdown extends Markdown
         $id = substr($url, 1);
         if ($url[0] == '#') {
             if (isset($this->elementIds[$id])) {
-                if ($this->elementIds[$id][1][0]=='leanpubHeadline' && $this->elementIds[$id][1]['level']==1)
-                    $url = $this->elementIds[$id][0];
+                
+                if ($this->elementIds[$id][1]==null)
+                    $outFile = $this->elementIds[$id][0] . '.html';
+                else 
+                    $outFile = $this->elementIds[$id][0] . '/' . $this->elementIds[$id][1] . '.html';
+
+                if ($this->elementIds[$id][2][0]=='leanpubHeadline' && $this->elementIds[$id][2]['level']!=1)
+                    $url = $outFile;
                 else
-                    $url = $this->elementIds[$id][0] . $url;
+                    $url = $outFile . $url;
 
                 $block['url'] = $url;
             } else {
@@ -407,8 +442,22 @@ class LeanpubMarkdown extends Markdown
     protected function renderLeanpubHeadline($block)
     {
         $tag = 'h' . $block['level'];
-        return "<$tag id=\"".$block['id']."\">" . (isset($block['number'])?$block['number']:'') . ' ' 
+        $markup = "<$tag id=\"".$block['id']."\">" . (isset($block['number'])?$block['number']:'') . ' ' 
                 . $this->renderAbsy($block['content']) . "</$tag>\n";
+        
+        if ($block['level']==1) {
+            $element = $this->elementIds[$block['id']];
+            $chapterId = $element[0];
+            $sectionId = $element[1];
+            
+            foreach ($this->headlines as $headline) {
+                if ($headline['chapterId'] == $chapterId && isset($headline['children'])) {
+                    $markup .= '<p>' . $this->_renderToc($headline['children']) . "</p>\n";
+                }
+            }
+        }
+        
+        return $markup;
     }
 
     protected function renderFootnote($block) 

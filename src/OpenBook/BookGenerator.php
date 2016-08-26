@@ -265,57 +265,59 @@ class BookGenerator
         $this->warnings = array_merge($this->warnings, $this->markdownParser->warnings);
         
         // Generate an HTML file per chapter
-        $chapters = $this->markdownParser->chapters;
-        foreach ($chapters as $idx=>$chapter) {
+        $outFiles = $this->markdownParser->outFiles;
+        foreach ($outFiles as $idx=>$outFile) {
             
-            $chapterId = $chapter['id'];
-            $chapterTitle = $chapter['title'];
-            $chapterContent = $chapter['content'];
+            $id = $outFile['id'];
+            $isSection = strpos($id, '/')!=false;
+            $title = $outFile['title'];
+            $content = $outFile['content'];
     
             $linkPrev = null;
             if ($idx>0)
-                $linkPrev = $chapters[$idx-1]['id'];
+                $linkPrev = $outFiles[$idx-1]['id'];
             
             $linkNext = null;
-            if ($idx<count($chapters)-1)
-                $linkNext = $chapters[$idx+1]['id'];
+            if ($idx<count($outFiles)-1)
+                $linkNext = $outFiles[$idx+1]['id'];
             
             $vars = [
-                'content' => $chapterContent,
+                'content' => $content,
                 'linkPrev' => $linkPrev,
                 'linkNext' => $linkNext,
                 'upperAdContent' => $upperAdContent,
                 'lowerAdContent' => $lowerAdContent,
                 'bookProps' => $this->bookProps,
-                'langCode' => $langCode
+                'langCode' => $langCode,
+                'dirPrefix' => $isSection?'../../':'../',
+                'langDirPrefix' => $isSection?'../':'',
             ];
 
             $this->phpRenderer->clearVars();
             $content = $this->phpRenderer->render("data/theme/default/layout/chapter.php", $vars);
 
-            $html = $this->renderMainLayout($content, $chapterTitle, '../', $langCode);
+            $html = $this->renderMainLayout($content, $title, $isSection?'../../':'../', $langCode);
             
-            $outFile = $this->outDir . $langCode . "/toc.html";
+            $outFile = $this->outDir . $langCode . '/' . $id;
             
-            if (!is_dir($this->outDir . $langCode)) {
-                mkdir($this->outDir . $langCode, '0775', true);
+            $dirName = dirname($outFile);
+            if (!is_dir($dirName)) {
+                mkdir($dirName, '0775', true);
             }
-
-            $outFile = $this->outDir . $langCode . '/' . $chapterId;
             
             $this->log("Generating chapter: $outFile\n");
             
             file_put_contents($outFile, $html);
             
-            $this->siteUrls[] = [$this->bookProps['book_website'] . '/' . $langCode . '/' . $chapterId, 0.5];
-            
-            // Add image files to be copied later
-            foreach ($this->markdownParser->images as $fileName) {
-                $srcFilePath = $this->bookDir . 'manuscript/' . $langCode . '/' . $fileName;
-                $dstFilePath = $this->outDir . $langCode . '/' . $fileName;
-                $this->filesToCopy[$srcFilePath] = $dstFilePath;
-            }
+            $this->siteUrls[] = [$this->bookProps['book_website'] . '/' . $langCode . '/' . $id, 0.5];            
         }       
+        
+        // Add image files to be copied later
+        foreach ($this->markdownParser->images as $fileName) {
+            $srcFilePath = $this->bookDir . 'manuscript/' . $langCode . '/' . $fileName;
+            $dstFilePath = $this->outDir . $langCode . '/' . $fileName;
+            $this->filesToCopy[$srcFilePath] = $dstFilePath;
+        }
     }
     
     /**
