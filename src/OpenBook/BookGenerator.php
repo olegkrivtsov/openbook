@@ -264,6 +264,9 @@ class BookGenerator
         
         $this->warnings = array_merge($this->warnings, $this->markdownParser->warnings);
         
+        $linkCurrentChapter = null;
+        $currentChapterTitle = '';
+        
         // Generate an HTML file per chapter
         $outFiles = $this->markdownParser->outFiles;
         foreach ($outFiles as $idx=>$outFile) {
@@ -272,6 +275,10 @@ class BookGenerator
             $isSection = strpos($id, '/')!=false;
             $title = $outFile['title'];
             $content = $outFile['content'];
+            if (!$isSection) {
+                $linkCurrentChapter = $id;
+                $currentChapterTitle = $title;
+            }
     
             $linkPrev = null;
             if ($idx>0)
@@ -285,6 +292,8 @@ class BookGenerator
                 'content' => $content,
                 'linkPrev' => $linkPrev,
                 'linkNext' => $linkNext,
+                'linkCurrentChapter' => $isSection?$linkCurrentChapter:null,
+                'currentChapterTitle' => $currentChapterTitle,
                 'upperAdContent' => $upperAdContent,
                 'lowerAdContent' => $lowerAdContent,
                 'bookProps' => $this->bookProps,

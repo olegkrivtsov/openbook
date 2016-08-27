@@ -18,7 +18,14 @@
             <span class="nav-btn-text">Next</span><img alt="Next Chapter" src="<?= $this->dirPrefix ?>assets/images/right.png">
         </a>
         <?php endif; ?>
-    </div>    
+    </div>
+    <?php if ($this->linkCurrentChapter): ?>
+    <div class="current-chapter">
+        <a href="<?= $this->langDirPrefix . $this->linkCurrentChapter ?>">
+            <img alt="Contents" src="<?= $this->dirPrefix ?>assets/images/upload.png"><span class="nav-btn-text"><?= $this->currentChapterTitle ?></span>
+        </a>
+    </div>
+    <?php endif; ?>
 </div>
 
 <?= $this->upperAdContent ?>
@@ -45,6 +52,13 @@ if (isset($this->bookProps['incomplete_translations']) && in_array($this->langCo
     
 <!-- Navigation -->
 <div class="navigation">
+    <?php if ($this->linkCurrentChapter): ?>
+    <div class="current-chapter">
+        <a href="<?= $this->langDirPrefix . $this->linkCurrentChapter ?>">
+            <img alt="Contents" src="<?= $this->dirPrefix ?>assets/images/upload.png"><span class="nav-btn-text"><?= $this->currentChapterTitle ?></span>
+        </a>
+    </div>
+    <?php endif; ?>
     <div class="prev-chapter">
     <?php if ($this->linkPrev): ?>    
         <a href="<?= $this->langDirPrefix ?><?= $this->linkPrev ?>">
@@ -63,7 +77,7 @@ if (isset($this->bookProps['incomplete_translations']) && in_array($this->langCo
             <span class="nav-btn-text">Next</span><img alt="Next Chapter" src="<?= $this->dirPrefix ?>assets/images/right.png">
         </a>
         <?php endif; ?>
-    </div>    
+    </div>        
 </div>
 
 <div id="disqus_thread"></div>
