@@ -434,12 +434,15 @@ class LeanpubMarkdown extends Markdown
                 else 
                     $outFile = $this->elementIds[$id][0] . '/' . $this->elementIds[$id][1] . '.html';
 
-                if ($this->elementIds[$id][2][0]=='leanpubHeadline' && $this->elementIds[$id][2]['level']!=1)
+                if ($this->elementIds[$id][2][0]=='leanpubHeadline' && $this->elementIds[$id][2]['level']<=2)
                     $url = $outFile;
                 else
                     $url = $outFile . $url;
 
                 $block['url'] = $url;
+                
+                if ($this->curSectionId!=null)
+                    $block['url'] = '../' . $block['url'];
             } else {
                 $this->warnings[] = "The hyperlink '$url' refers to not existing element with ID = '$id'";
             }
