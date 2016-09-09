@@ -32,6 +32,12 @@ class LeanpubMarkdown extends Markdown
     public $images = [];
 
     /**
+     * Links
+     * @var array 
+     */
+    public $links = [];
+    
+    /**
      * Table of contents
      * @var array 
      */
@@ -94,6 +100,7 @@ class LeanpubMarkdown extends Markdown
         $this->toc = '';
         $this->headlines = [];
         $this->images = [];
+        $this->links = [];
         $this->elementIds = [];
         $this->isMainmatter = false;
         $this->curChapterNumber = 0;
@@ -444,8 +451,10 @@ class LeanpubMarkdown extends Markdown
                 if ($this->curSectionId!=null)
                     $block['url'] = '../' . $block['url'];
             } else {
-                $this->warnings[] = "The hyperlink '$url' refers to not existing element with ID = '$id'";
+                $this->warnings[] = "The hyperlink '$url' refers to not existing element with ID = '$id' (in chapter " . $this->curChapterId . ")";
             }
+        } else {
+            $this->links[] = ['url'=>$block['url'], 'chapter_id'=>$this->curChapterId, 'section_id'=>$this->curSectionId];
         }
 
         return '<a href="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'

@@ -6,6 +6,9 @@ use OpenBook\SitemapGenerator;
 
 class BookGenerator
 {
+    protected $verbose = false;
+    protected $validateLinks = false;
+    
     /**
      * List of warnings.
      * @var type 
@@ -49,6 +52,12 @@ class BookGenerator
     private $markdownParser;
     
     /**
+     * Link validator.
+     * @var type 
+     */
+    private $linkValidator;
+    
+    /**
      * URLs for site map.
      * @var type 
      */
@@ -61,6 +70,7 @@ class BookGenerator
     {
         $this->phpRenderer = new PhpRenderer();        
         $this->markdownParser = new LeanpubMarkdown();
+        $this->linkValidator = new LinkValidator();
     }
     
     /**
@@ -77,14 +87,17 @@ class BookGenerator
      */
     protected function log($msg)
     {
-        echo $msg;
+        if ($this->verbose)
+            echo $msg;
     }
     
     /**
      * Generates the book in HTML format. 
      */
-    public function generate($dirName)
+    public function generate($dirName, $verbose=false, $validateLinks=false)
     {
+        $this->verbose = $verbose;
+        $this->validateLinks = $validateLinks;
         $this->warnings = [];
         
         // Append slash to dir name, if not exists.
@@ -321,6 +334,24 @@ class BookGenerator
             $this->siteUrls[] = [$this->bookProps['book_website'] . '/' . $langCode . '/' . $id, 0.5];            
         }       
         
+        if ($this->validateLinks) {
+            // Validate links
+            $this->log("Validating links\n");
+            foreach ($this->markdownParser->links as $link)
+            {
+                $url = $link['url'];
+                $chapterId = $link['chapter_id'];
+                $errorMsg = '';
+                $isValid = $this->linkValidator->validateLink($url, $errorMsg);
+                if (!$isValid) {
+                    $this->log('Warning:' . $errorMsg . " (in chapter $chapterId)\n");
+                    $this->warnings[] = $errorMsg . " (in chapter $chapterId)";
+                } else {
+                    $this->log($errorMsg);
+                }
+            }
+        }
+
         // Add image files to be copied later
         foreach ($this->markdownParser->images as $fileName) {
             $srcFilePath = $this->bookDir . 'manuscript/' . $langCode . '/' . $fileName;
