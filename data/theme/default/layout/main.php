@@ -43,7 +43,7 @@
                 Copyright <?= $this->copyright ?>
             </div>
             <div class="generated-by">
-                Generated using <a href="https://github.com/olegkrivtsov/openbook">OpenBook</a> on <?php echo date('Y-m-d') ?> at <?php echo date('H:i') ?>
+                Generated using <a href="https://github.com/olegkrivtsov/openbook">OpenBook</a>
             </div>
         </div>    
     </div>

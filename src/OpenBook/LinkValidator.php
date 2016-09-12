@@ -31,7 +31,7 @@ class LinkValidator
         curl_setopt($this->ch, CURLOPT_COOKIEJAR, $cookie);
         curl_setopt($this->ch, CURLOPT_ENCODING, "");
         curl_setopt($this->ch, CURLOPT_AUTOREFERER, 1);
-        curl_setopt($this->ch, CURLOPT_MAXREDIRS, 50);
+        curl_setopt($this->ch, CURLOPT_MAXREDIRS, 20);
         
         $pageContent = curl_exec($this->ch);
         
