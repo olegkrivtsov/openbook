@@ -99,6 +99,7 @@ jQuery(document).ready(function($){
 });
 </script>
 
+<?php if ($this->bookProps['google_analytics']['enabled']): ?>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -109,6 +110,7 @@ jQuery(document).ready(function($){
   ga('send', 'pageview');
 
 </script>
+<?php endif; ?>
 
 </body>
 </html>    

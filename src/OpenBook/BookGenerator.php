@@ -168,7 +168,33 @@ class BookGenerator
         if(!is_array($bookProps))
             throw new \Exception("The file '$fileName' is not in JSON format.");
         
-        $this->bookProps = $bookProps;
+        $defaults = [
+            "book_title" => "Unnamed Book",
+            "book_subtitle" => "Just another unnamed book",
+            "copyright" => "Put Your Name Here",
+            "license" => null,
+            "book_website" => null,
+            "keywords" => [],
+            "links" => [],
+            "languages" => ["en" => 'English'],
+            "incomplete_translations" => [],
+            "google_analytics" => [
+                "enabled" => false,
+		"account_id" => null
+            ],
+            "google_adsence" => [
+                "enabled" => false, 
+                "contents_ad" => null,
+		"chapter_upper_ad" => null,
+		"chapter_bottom_ad" => null,
+            ],
+            "disqus" => [
+                "enabled" => false,
+		"src" => null
+            ]
+        ];
+        
+        $this->bookProps = array_merge($defaults, $bookProps);
     }
                 
     /**
@@ -266,8 +292,14 @@ class BookGenerator
     {
         $this->log("Generating chapters in HTML format for language $langCode\n");
         
-        $upperAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_upper_ad']);
-        $lowerAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_bottom_ad']);
+        $upperAdContent = null;
+        $lowerAdContent = null;
+        if ($this->bookProps['google_adsence']['enabled']==true) {            
+            if (is_readable($this->bookDir . $this->bookProps['google_adsence']['chapter_upper_ad'])) 
+                $upperAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_upper_ad']);
+            if (is_readable($this->bookDir . $this->bookProps['google_adsence']['chapter_bottom_ad'])) 
+                $lowerAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_bottom_ad']);
+        }
         
         $this->markdownParser->parse($markdown);
         
@@ -366,8 +398,11 @@ class BookGenerator
     protected function generateTableOfContents($langCode)
     {
         // Generate toc.html
-        
-        $tocAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['contents_ad']);
+        $tocAdContent = null;
+        if ($this->bookProps['google_adsence']['enabled']==true) {            
+            if (is_readable($this->bookDir . $this->bookProps['google_adsence']['chapter_upper_ad']))
+                $tocAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['contents_ad']);
+        }
         
         $vars = [
             'languages' => $this->bookProps['languages'],

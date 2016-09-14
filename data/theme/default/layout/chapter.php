@@ -28,7 +28,9 @@
     <?php endif; ?>
 </div>
 
+<?php if ($this->bookProps['google_adsence']['enabled']): ?>
 <?= $this->upperAdContent ?>
+<?php endif; ?>
 
 <!-- Chapter content -->
 <div id="chapter_content">
@@ -43,12 +45,14 @@ if (isset($this->bookProps['incomplete_translations']) && in_array($this->langCo
 <?php echo $this->content; ?>        
 </div>
 
+<?php if ($this->bookProps['google_adsence']['enabled']): ?>
 <!-- Ads -->
 <div id="ads-chapter-bottom">
 <div>
 <?= $this->lowerAdContent ?>
 </div>
 </div>
+<?php endif; ?>
     
 <!-- Navigation -->
 <div class="navigation">
@@ -86,6 +90,8 @@ if (isset($this->bookProps['incomplete_translations']) && in_array($this->langCo
 $this->externalStylesheets[] = 'assets/css/prism.css';
 $this->externalScripts[] = 'assets/js/prism.js';
 $pageTitle = $this->pageTitle;
+
+if ($this->bookProps['google_analytics']['enabled']) {
 $disqusSrc = $this->bookProps['disqus']['src'];
 $this->inlineScripts[] = <<<EOT
 <script>
@@ -105,4 +111,5 @@ s.setAttribute('data-timestamp', +new Date());
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 EOT;
+}
 ?>
