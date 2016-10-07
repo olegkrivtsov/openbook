@@ -265,7 +265,7 @@ class LeanpubMarkdown extends Markdown
         for (;;) {
 
             // Read prop name
-            if (!preg_match('/^([\w\d-_]+)\s*=/', $line, $matches))
+            if (!preg_match('/^([\w\d-_]+)\s*=/u', $line, $matches))
                 return false;
 
             $propName = $matches[1];
@@ -281,21 +281,21 @@ class LeanpubMarkdown extends Markdown
 
             if ($line[0] == '"') {
                 // Quoted value
-                if (!preg_match('/^"(([^"]|\\")*)"\s*/', $line, $matches))
+                if (!preg_match('/^"(([^"]|\\")*)"\s*/u', $line, $matches))
                     return false;
 
                 $propVal = $matches[1];
                 $line = ltrim(substr($line, strlen($matches[0])));
             } else if ($line[0] == "'") {
                 // Quoted value
-                if (!preg_match('/^\'(([^\']|\')*)\'\s*/', $line, $matches))
+                if (!preg_match('/^\'(([^\']|\')*)\'\s*/u', $line, $matches))
                     return false;
 
                 $propVal = $matches[1];
                 $line = ltrim(substr($line, strlen($matches[0])));
             } else {
                 // Unquoted value
-                if (!preg_match('/^([^\s,]*)\s*/', $line, $matches))
+                if (!preg_match('/^([^\s,]*)\s*/u', $line, $matches))
                     return false;
 
                 $propVal = $matches[1];
