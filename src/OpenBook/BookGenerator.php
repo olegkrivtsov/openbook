@@ -356,7 +356,7 @@ class BookGenerator
             
             $dirName = dirname($outFile);
             if (!is_dir($dirName)) {
-                mkdir($dirName, '0775', true);
+                mkdir($dirName, 0775, true);
             }
             
             $this->log("Generating chapter: $outFile\n");
@@ -513,7 +513,7 @@ class BookGenerator
         $count = 0;
         foreach ($this->filesToCopy as $srcFile=>$dstFile) {
             if(!is_dir(dirname($dstFile)))
-                mkdir(dirname($dstFile), '775', true);
+                mkdir(dirname($dstFile), 775, true);
             if(!is_readable($srcFile)) {
                 $this->warnings[] = 'Failed to copy file: ' . $srcFile;
                 $this->log('Failed to copy file: ' . $srcFile . "\n");
