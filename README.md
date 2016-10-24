@@ -13,7 +13,7 @@ Organise your book files in the following manner:
     en/
       chapter1.txt
       chapter2.txt
-    Book.txt
+      Book.txt
 openbook.json  
 ```
 
