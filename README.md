@@ -14,7 +14,7 @@ Organise your book files in the following manner:
       chapter1.txt
       chapter2.txt
       Book.txt
-openbook.json  
+  openbook.json  
 ```
 
 Here, the `openbook.json` should be a file in JSON format containing book properties, like its title,
