@@ -11,7 +11,7 @@ This book is available in:
 
 <h1>Table of Contents</h1>
 
-<div id="toc">
+<div id="toc" style="display:none">
 <?php echo $this->toc; ?>        
 </div>
 
@@ -35,6 +35,8 @@ $(document).ready(function(){
           "force_text": true
         },
         "plugins" : [ "wholerow" ]
+      }).on('ready.jstree', function (e, data) {
+        $('#toc').show();
       });
       
     $('#toc').bind("select_node.jstree", function (e, data) {
