@@ -183,7 +183,7 @@ blockquote {
     padding: 5px 45px;
     margin: 0 0;
     background-repeat: no-repeat;
-    background-position: 0 15px;
+    background-position: 0 5px;
 }
 
 blockquote.tip {
