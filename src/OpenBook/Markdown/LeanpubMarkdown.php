@@ -499,4 +499,13 @@ class LeanpubMarkdown extends Markdown
         $text = htmlspecialchars($block[1], ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8');
         return '<sup id="fnref:' . $text . '"><a href="#fn:' . $text . '" class="footnote-ref" rel="footnote">' . $num . '</a></sup>';
     }
+    
+    protected function renderText($text)
+    {
+        if (strpos($text[1], "  \n")!==false) {
+            $this->warnings[] = 'Two spaces at the end of line detected in the following fragment "' . $text[1] . '", which can result in undesired line break insertion (in chapter ' . $this->curChapterId . ")";
+        }
+        return parent::renderText($text);
+        return str_replace("  \n", $this->html5 ? "<br>\n" : "<br />\n", $text[1]);
+    }
 }
