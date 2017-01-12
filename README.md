@@ -3,7 +3,7 @@
 This project is an open-source book generator. It gets the book in Markdown format (particularly its 
 [Leanpub](https://leanpub.com/help/manual) flavor) and produces HTML files on output. 
 
-# Book Structure
+## Book Structure
 
 Organise your book files in the following manner:
 
@@ -21,6 +21,8 @@ Here, the `openbook.json` should be a file in JSON format containing book proper
 subtitle, copyright information, etc.
 
 You can find an example of a real-life book here: [https://github.com/olegkrivtsov/using-zend-framework-3-book](https://github.com/olegkrivtsov/using-zend-framework-3-book).
+
+## Generating the Book
 
 To generate HTML file for the book, you first need to install PHP like the following (version 5.5 or later):
 
