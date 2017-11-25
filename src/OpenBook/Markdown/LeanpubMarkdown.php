@@ -135,7 +135,7 @@ class LeanpubMarkdown extends Markdown
             if ($block[0] == 'leanpubHeadline' && $block['level'] == 1) {
                 // Add new chapter
                 $chapterTitle = $this->renderAbsy($block['content']);
-                $chapterId = preg_replace('/[^\w\d]/u', '_', $chapterTitle);
+                $chapterId = ltrim(preg_replace('/[^\w\d]/u', '_', $chapterTitle), '_');
                 
                 $outFiles[] = [
                     'id' => $chapterId,
