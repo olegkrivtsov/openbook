@@ -153,7 +153,7 @@ class LeanpubMarkdown extends Markdown
             if ($block[0] == 'leanpubHeadline' && $block['level'] == 2) {
                 // Add new section
                 $sectionTitle = $this->renderAbsy($block['content']);
-                $sectionId = preg_replace('/[^\w\d]/u', '_', $sectionTitle);
+                $sectionId = ltrim(preg_replace('/[^\w\d]/u', '_', $sectionTitle), '_');
                 
                 $this->curSectionId = $sectionId;
                 
