@@ -91,7 +91,7 @@ $this->externalStylesheets[] = 'assets/css/prism.css';
 $this->externalScripts[] = 'assets/js/prism.js';
 $pageTitle = $this->pageTitle;
 
-if ($this->bookProps['google_analytics']['enabled']) {
+if ($this->bookProps['disqus']['enabled']) {
 $disqusSrc = $this->bookProps['disqus']['src'];
 $this->inlineScripts[] = <<<EOT
 <script>
