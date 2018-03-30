@@ -18,7 +18,52 @@ Organise your book files in the following manner:
 ```
 
 Here, the `openbook.json` should be a file in JSON format containing book properties, like its title,
-subtitle, copyright information, etc.
+subtitle, copyright information, etc. An example of a real-life `openbook.json` is presented below:
+
+```
+{
+    "book_title": "Using Zend Framework 3",
+    "book_subtitle": "A free and open-source book about Zend Framework",
+    "copyright": "(c) 2018 by Oleg Krivtsov",
+    "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "book_website": "https://olegkrivtsov.github.io/using-zend-framework-3-book/html",
+    "keywords": [
+        "php",
+        "zend framework",
+        "book",
+        "tutorial",
+        "documentation",
+        "learn",
+        "free"
+    ],
+    "links": {
+        "Home": "https://olegkrivtsov.github.io/using-zend-framework-3-book/html",
+        "Samples": "https://github.com/olegkrivtsov/using-zf3-book-samples",
+        "Class Reference": "https://olegkrivtsov.github.io/zf3-api-reference/html/",
+        "Contribute": "https://github.com/olegkrivtsov/using-zend-framework-3-book"
+    },
+    "languages": {
+        "en": "English",
+        "ru": "Русский",
+        "es": "Español"
+    },
+    "incomplete_translations": ["es"],
+    "google_analytics": {
+        "enabled": true,
+        "account_id": "UA-80824388-1"
+    },
+    "google_adsence": {
+        "enabled": true, 
+        "contents_ad": "data/contents_ad.js",
+        "chapter_upper_ad": "data/upper_ad.js",
+        "chapter_bottom_ad": "data/bottom_ad.js"
+    },
+    "disqus": {
+        "enabled": true,
+        "src": "//using-zend-framework-3-book.disqus.com/embed.js"
+    }
+}
+```
 
 You can find an example of a real-life book here: [https://github.com/olegkrivtsov/using-zend-framework-3-book](https://github.com/olegkrivtsov/using-zend-framework-3-book).
 
