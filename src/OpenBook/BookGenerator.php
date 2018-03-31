@@ -117,7 +117,20 @@ class BookGenerator
         
         // Read 'openbook.json' file.
         $this->getBookProps();
-                
+
+        if ($this->bookProps['api_reference']['enabled']) {
+            $this->log("Getting the API reference from URL: " . $this->bookProps['api_reference']['class_index_url'] . "\n");
+            
+            $apiIndexJson = file_get_contents($this->bookProps['api_reference']['class_index_url']);
+            
+            if ($apiIndexJson==false) {
+                throw new \Exception('Cannot read API class index file');
+            }
+            
+            $this->apiIndex = json_decode($apiIndexJson, true);
+            $this->markdownParser->apiIndex = $this->apiIndex;
+        }
+        
         // Parse manuscript files for each available language
         $this->processLanguages();
         
@@ -191,7 +204,11 @@ class BookGenerator
             "disqus" => [
                 "enabled" => false,
 		"src" => null
-            ]
+            ],
+            "api_reference" => [
+                "enabled" => false,
+                "src" => null,
+            ],
         ];
         
         $this->bookProps = array_merge($defaults, $bookProps);

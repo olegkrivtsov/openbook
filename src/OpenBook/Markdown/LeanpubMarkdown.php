@@ -22,6 +22,8 @@ class LeanpubMarkdown extends Markdown
     // include inline element parsing using traits
     use \OpenBook\Markdown\Inline\FootnoteLinkTrait;
     use \OpenBook\Markdown\Inline\SuperscriptTrait;
+    use \OpenBook\Markdown\Inline\ApiDocLinkTrait;
+    
 
     public $warnings = [];
     
@@ -54,6 +56,12 @@ class LeanpubMarkdown extends Markdown
      * @var type 
      */
     public $outFiles = [];
+    
+    /**
+     * Api index
+     * @var array 
+     */
+    public $apiIndex = [];
 
     /**
      * @inheritDoc
