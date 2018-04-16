@@ -11,7 +11,7 @@ trait ApiDocLinkTrait
      */
     protected function parseApiDocLink($text)
     {
-        if (preg_match('/^@`([A-Za-z\\\_]+)`(\[([A-Za-z\\\_]+)\])?/', $text, $matches)) {
+        if (preg_match('/^@`([A-Za-z0-9\\\_]+)`(\[([A-Za-z0-9\\\_]+)\])?/', $text, $matches)) {
 
             if (isset($matches[3])) {
                 return [
