@@ -191,6 +191,7 @@ class BookGenerator
             "links" => [],
             "languages" => ["en" => 'English'],
             "incomplete_translations" => [],
+            "theme" => 'default',
             "google_analytics" => [
                 "enabled" => false,
 		"account_id" => null
@@ -209,6 +210,7 @@ class BookGenerator
                 "enabled" => false,
                 "src" => null,
             ],
+            "chapter_js_scripts" => [], 
         ];
         
         $this->bookProps = array_merge($defaults, $bookProps);
@@ -318,6 +320,12 @@ class BookGenerator
                 $lowerAdContent = file_get_contents($this->bookDir . $this->bookProps['google_adsence']['chapter_bottom_ad']);
         }
         
+        $inlineScripts = [];
+        
+        foreach ($this->bookProps['chapter_js_scripts'] as $fileName) {
+            $inlineScripts[] = file_get_contents($this->bookDir . $fileName);
+        }
+        
         $this->markdownParser->parse($markdown);
         
         foreach ($this->markdownParser->warnings as $warning) {
@@ -361,10 +369,11 @@ class BookGenerator
                 'bookProps' => $this->bookProps,
                 'langCode' => $langCode,
                 'dirPrefix' => $isSection?'../../':'../',
-                'langDirPrefix' => $isSection?'../':'',
+                'langDirPrefix' => $isSection?'../':''
             ];
 
             $this->phpRenderer->clearVars();
+            $this->phpRenderer->inlineScripts = $inlineScripts;
             $content = $this->phpRenderer->render("data/theme/default/layout/chapter.php", $vars);
 
             $html = $this->renderMainLayout($content, $title, $isSection?'../../':'../', $langCode);

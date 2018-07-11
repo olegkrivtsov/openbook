@@ -89,6 +89,7 @@ if (isset($this->bookProps['incomplete_translations']) && in_array($this->langCo
 <?php
 $this->externalStylesheets[] = 'assets/css/prism.css';
 $this->externalScripts[] = 'assets/js/prism.js';
+
 $pageTitle = $this->pageTitle;
 
 if ($this->bookProps['disqus']['enabled']) {
