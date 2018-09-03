@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="<?= $this->dirPrefix ?>favicon.ico" rel="shortcut icon" type="image/ico" />
 <link href="<?= $this->dirPrefix ?>assets/css/style.css" type="text/css" rel="stylesheet" />
-<title><?= strlen($this->pageTitle)!=0?($this->pageTitle . ' -- ' . $this->bookTitle):($this->bookTitle . ' -- ' . $this->bookSubtitle); ?></title>
+<title><?= strlen($this->pageTitle)!=0?($this->pageTitle . ' &ndash; ' . $this->bookTitle):($this->bookTitle . ' -- ' . $this->bookSubtitle); ?></title>
 </head>
 <body>
 <header>
@@ -53,6 +53,7 @@
 
 <script src="<?= $this->dirPrefix ?>assets/js/jquery.min.js"></script>
 <script src="<?= $this->dirPrefix ?>assets/js/loadCSS.js"></script>
+<script src="<?= $this->dirPrefix ?>assets/js/popup.js"></script>
 
 <?php foreach ($this->externalScripts as $scriptPath): ?>
 <script src="<?= $this->dirPrefix . $scriptPath ?>"></script>
