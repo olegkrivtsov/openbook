@@ -64,6 +64,11 @@ class LeanpubMarkdown extends Markdown
     public $apiIndex = [];
 
     /**
+     * Current language code.
+     */
+    public $curLangId = '';
+    
+    /**
      * @inheritDoc
      */
     protected $escapeCharacters = [
@@ -459,13 +464,19 @@ class LeanpubMarkdown extends Markdown
                 if ($this->curSectionId!=null)
                     $block['url'] = '../' . $block['url'];
             } else {
-                $this->warnings[] = "The hyperlink '$url' refers to not existing element with ID = '$id' (in chapter " . $this->curChapterId . ")";
+                $this->warnings[] = "The hyperlink '$url' refers to not existing element with ID = '$id' (in " . $this->curLangId . " chapter " . $this->curChapterId . ")";
             }
         } else {
             $this->links[] = ['url'=>$block['url'], 'chapter_id'=>$this->curChapterId, 'section_id'=>$this->curSectionId];
         }
+        
+        // Open external links in another window
+        $target = '';
+        if ($url[0] != '#') {
+            $target = 'target="_blank"';
+        }
 
-        return '<a href="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'
+        return '<a ' . $target . ' href="' . htmlspecialchars($block['url'], ENT_COMPAT | ENT_HTML401, 'UTF-8') . '"'
                 . (empty($block['title']) ? '' : ' title="' . htmlspecialchars($block['title'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8') . '"')
                 . '>' . $this->renderAbsy($block['text']) . '</a>';
     }
@@ -511,7 +522,7 @@ class LeanpubMarkdown extends Markdown
     protected function renderText($text)
     {
         if (strpos($text[1], "  \n")!==false) {
-            $this->warnings[] = 'Two spaces at the end of line detected in the following fragment "' . $text[1] . '", which can result in undesired line break insertion (in chapter ' . $this->curChapterId . ")";
+            $this->warnings[] = 'Two spaces at the end of line detected in the following fragment "' . $text[1] . '", which can result in undesired line break insertion (in ' . $this->curLangId . ' chapter ' . $this->curChapterId . ")";
         }
         return parent::renderText($text);
         return str_replace("  \n", $this->html5 ? "<br>\n" : "<br />\n", $text[1]);

@@ -40,11 +40,11 @@ trait ApiDocLinkTrait
         $linkUrl = '#';
         
         if (!isset($this->apiIndex[$className])) {
-            $this->warnings[] = 'Not found class or namespace name ' . $className . ' in API reference (in chapter ' . $this->curChapterId . ')';
+            $this->warnings[] = 'Not found class or namespace name ' . $className . ' in API reference (in ' . $this->curLangId. ' chapter ' . $this->curChapterId . ')';
         } else {
             $linkUrl = $this->apiIndex[$className];
             if (is_array($linkUrl)) {
-                $this->warnings[] = 'Ambiguous class or namespace name ' . $className . ' in API reference (in chapter ' . $this->curChapterId . ')';
+                $this->warnings[] = 'Ambiguous class or namespace name ' . $className . ' in API reference (in ' . $this->curLangId. ' chapter ' . $this->curChapterId . ") - it could point to any of the following:\r\n  " . implode("\r\n  ", $linkUrl);
                 $linkUrl = '#';
             }
         }

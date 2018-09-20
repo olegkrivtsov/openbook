@@ -326,6 +326,7 @@ class BookGenerator
             $inlineScripts[] = file_get_contents($this->bookDir . $fileName);
         }
         
+        $this->markdownParser->curLangId = $langCode;
         $this->markdownParser->parse($markdown);
         
         foreach ($this->markdownParser->warnings as $warning) {
