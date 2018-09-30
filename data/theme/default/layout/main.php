@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="<?= $this->dirPrefix ?>favicon.ico" rel="shortcut icon" type="image/ico" />
 <link href="<?= $this->dirPrefix ?>assets/css/style.css" type="text/css" rel="stylesheet" />
-<title><?= strlen($this->pageTitle)!=0?($this->pageTitle . ' &ndash; ' . $this->bookTitle):($this->bookTitle . ' -- ' . $this->bookSubtitle); ?></title>
+<title><?= strlen($this->pageTitle)!=0?($this->pageTitle . ' &ndash; ' . $this->bookTitle):($this->bookTitle . ' &ndash; ' . $this->bookSubtitle); ?></title>
 </head>
 <body>
 <header>

@@ -446,7 +446,8 @@ class LeanpubMarkdown extends Markdown
 
         $url = $block['url'];
         $id = substr($url, 1);
-        if ($url[0] == '#') {
+        $internalLink = $url[0] == '#';
+        if ($internalLink) {
             if (isset($this->elementIds[$id])) {
                 
                 if ($this->elementIds[$id][1]==null)
@@ -472,7 +473,7 @@ class LeanpubMarkdown extends Markdown
         
         // Open external links in another window
         $target = '';
-        if ($url[0] != '#') {
+        if (!$internalLink) {
             $target = 'target="_blank"';
         }
 

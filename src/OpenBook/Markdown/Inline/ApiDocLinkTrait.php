@@ -50,7 +50,7 @@ trait ApiDocLinkTrait
         }
         
         $text = htmlspecialchars($block[1], ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        return '<code><a href="' . $linkUrl . '" class="api-link">' . $text . '</a></code>';
+        return '<code><a target="_blank" href="' . $linkUrl . '" class="api-link">' . $text . '</a></code>';
     }
 }
 
