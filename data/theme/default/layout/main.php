@@ -42,6 +42,13 @@
             <div class="copyright">
                 Copyright <?= $this->copyright ?>
             </div>
+            <div class="footer-menu">
+                <?php foreach ($this->footer_links as $linkText=>$linkUrl): ?>
+                <div class="footer-link">
+                    <a href="<?= $linkUrl ?>"><?= $linkText ?></a>
+                </div>
+                <?php endforeach; ?>
+            </div>
             <div class="generated-by">
                 Generated using <a href="https://github.com/olegkrivtsov/openbook">OpenBook</a>
             </div>
