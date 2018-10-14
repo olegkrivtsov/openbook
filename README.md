@@ -11,9 +11,10 @@ Organise your book files in the following manner:
 <book_dir>/
   manuscript/
     en/
+      Book.txt
       chapter1.txt
       chapter2.txt
-      Book.txt
+      ...
   openbook.json  
 ```
 
@@ -65,13 +66,25 @@ subtitle, copyright information, etc. An example of a real-life `openbook.json` 
 }
 ```
 
-You can find an example of a real-life book here: [https://github.com/olegkrivtsov/using-zend-framework-3-book](https://github.com/olegkrivtsov/using-zend-framework-3-book).
+The `Book.txt` file should contain the list of chapters to include:
 
-## Generating the Book
+```
+chapter1.txt
+chapter2.txt
+...
+```
 
-To generate HTML file for the book, you first need to install PHP like the following (version 5.5 or later):
+You can find an example of a real-life book here: [https://github.com/olegkrivtsov/using-zend-framework-3-book](https://github.com/olegkrivtsov/using-zend-framework-3-book). The OpenBook tool was mainly developed to generate the HTML files of that book.
+
+## Generating Your Book
+
+To generate HTML file for your own book, you first need to install PHP like the following (version 5.6 or later). In Linux Ubuntu you can do that with the following command:
 
 `sudo apt-get install php`
+
+In Linux CentOS you can do that with the command:
+
+`yum install php70`
 
 Then clone OpenBook from this page or download it as a ZIP archive and unpack somewhere.
 
