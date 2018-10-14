@@ -40,7 +40,7 @@
     <div class="footer">
         <div class="footer-body">
             <div class="copyright">
-                Copyright <?= $this->copyright ?>
+                Copyright &copy; <?= $this->copyright ?>
             </div>
             <div class="footer-menu">
                 <?php foreach ($this->footer_links as $linkText=>$linkUrl): ?>
