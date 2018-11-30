@@ -99,7 +99,7 @@ In Linux CentOS you can do that with the command:
 
 `yum install php70`
 
-If the instructions above do not work, please [search](https://www.google.com/search?q=install+php) for relevant instructions.
+If the instructions above do not work in your OS, please [search](https://www.google.com/search?q=install+php) for relevant instructions.
 
 Then [clone](https://help.github.com/articles/cloning-a-repository/) this repository or download it as a ZIP archive and unpack somewhere.
 
@@ -122,3 +122,14 @@ That's all, enjoy and do not hesitate to [report](https://github.com/olegkrivtso
 
 # License
 
+This book uses the [MIT](https://en.wikipedia.org/wiki/MIT_License) license.
+
+# Contributing
+
+You may contribute in the following ways:
+
+ * If you want to report a bug, please use the [Issues](https://github.com/olegkrivtsov/openbook/issues) page.
+ * If you want to propose an improvement, please make a fork of this repository, edit the source code and finally make a [pull](https://help.github.com/articles/about-pull-requests/) request.
+
+If you want to contact me personally, please use the olegkrivtsov at gmail dot com email address. But please note that this is my personal address and I will ignore spam messages. (If I do not respond than your message is not interesting for me - or I'm just rather busy at work).
+ 
