@@ -1,19 +1,30 @@
 # OpenBook - The Open-Source Book Generator
 
-This project is an open-source book generator. It gets the book in Markdown format (particularly its 
-[Leanpub](https://leanpub.com/help/manual) flavor) and produces HTML files on output. 
+The aim of this project is to develop a convenient tool for generating online books on PHP programming readable online on any-sized device (from smartphones to desktops). It gets the book sources in Markdown format (particularly its 
+[Leanpub](https://leanpub.com/help/manual) flavor) produces HTML files on output.  
 
-This project was originally developed to generate HTML files of my open-source PHP programming book [Using Zend Framework 3](https://github.com/olegkrivtsov/using-zend-framework-3-book), but can be used to generate HTML files of any book on PHP programming.
+## Background 
 
-If you find it useful for your book - please do not hesitate to contribute.
+This project originated as an HTML files generator for my open-source PHP programming book [Using Zend Framework 3](https://github.com/olegkrivtsov/using-zend-framework-3-book). I wanted to have a console tool for generating the static HTML files of the book from Markdown sources and referenced PNG images. I didn't find ready tools that are convenient enough, so I decided to create my own tool.
 
-## Book Structure
+## Features
 
-The long story short, you can find an example of a real-life book here: [https://github.com/olegkrivtsov/using-zend-framework-3-book](https://github.com/olegkrivtsov/using-zend-framework-3-book). The OpenBook tool was mainly developed to generate the HTML files of that book.
+Currently the tool can:
+ 
+ * Generate
 
-Now the long story. 
+## Installation
 
-Organise your book files in the following manner (files below are ordered in the alphabetical order):
+
+
+## Using the Tool
+
+
+### Book Structure
+
+If you want to briefly review an example of a ready book, take a look at the GitHub repository where I store the sources of my [Using Zend Framework 3](https://github.com/olegkrivtsov/using-zend-framework-3-book) book. If you find the structure of that repository confusing, please see below for clarification.
+
+The files of the book are organized in the following manner:
 
 ```
 <book_dir>/
@@ -25,11 +36,15 @@ Organise your book files in the following manner (files below are ordered in the
       chapter2.txt
       ...
     ru/
+      images/
     another-lang/
+      images/
   openbook.json  
 ```
 
-Here, the *<book_dir>* is the top-level directory. The *manuscript* directory is the directory where Markdown files of the book are stored. The *en/*, *ru/*, *another-lang/* are directories where the Markdown files for a specific language are stored. The *images* directory is the directory where you should place the PNG images you want to reference in the book text. 
+The *manuscript* directory is the directory where Markdown files of the book are stored. The *en/*, *ru/*, *another-lang/* are directories where the Markdown files for a specific language are stored. The *images* directory is the directory where you should place the PNG images you want to reference in the book text. 
+
+#### Options File
 
 `openbook.json` should be a file in JSON format containing book properties, like its title,
 subtitle, copyright information, etc. An example of a real-life `openbook.json` is presented below:
@@ -79,11 +94,14 @@ subtitle, copyright information, etc. An example of a real-life `openbook.json` 
 }
 ```
 
-The `Book.txt` file should contain the list of chapters to include:
+The `Book.txt` file should contain the list of chapters to include into the book:
 
 ```
+preface.txt
+acknowledgments.txt
 chapter1.txt
 chapter2.txt
+chapter3.txt
 ...
 ```
 
@@ -118,7 +136,7 @@ php openbook.php /path/to/your/book
 
 If everything is OK, you'll find the HTML files in `/path/to/your/book/html` directory.
 
-That's all, enjoy and do not hesitate to [report](https://github.com/olegkrivtsov/openbook/issues) bugs/contribute!
+That's all, enjoy and do not hesitate to [report](https://github.com/olegkrivtsov/openbook/issues) bugs and contribute (see below)!
 
 # License
 
@@ -130,6 +148,7 @@ You may contribute in the following ways:
 
  * If you want to report a bug, please use the [Issues](https://github.com/olegkrivtsov/openbook/issues) page.
  * If you want to propose an improvement, please make a fork of this repository, edit the source code and finally make a [pull](https://help.github.com/articles/about-pull-requests/) request.
-
-If you want to contact me personally, please use the olegkrivtsov at gmail dot com email address. But please note that this is my personal address and I will ignore spam messages. (If I do not respond than your message is not interesting for me - or I'm just rather busy at work).
  
+# Your Feedback
+
+If you want to contact me personally to share your imotions about this project, please use the olegkrivtsov at gmail dot com email address. But please note that this is my personal address and I will ignore non-relevant messages.
