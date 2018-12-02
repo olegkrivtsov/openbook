@@ -1,4 +1,4 @@
-# OpenBook - The Open-Source Book Generator
+# OpenBook - The Open-Source Tool for Generating HTML Books about PHP Programming Language
 
 The aim of this project is to develop a convenient tool for generating online books on PHP programming readable online on any-sized device (from smartphones to desktops). It gets the book sources in Markdown format (particularly its 
 [Leanpub](https://leanpub.com/help/manual) flavor) produces HTML files on output.  
