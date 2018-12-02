@@ -8,9 +8,11 @@ This project originated as an HTML files generator for my open-source PHP progra
 
 ## Features
 
-Currently the tool can do the following:
+Currently you can do the following using this tool:
  
- * Generate HTML files from Markdown (`.md`) sources.
+ * Generate HTML files from Markdown (`.md`) sources using the command-line interface. The tool can automatically check for some errors/mistakes in your `.md` files and report them saving your time.
+ * Reference PNG or JPEG images in the book text.
+ * Display the Google AdSense ads on the book pages.
  * 
 
 # License
