@@ -1,7 +1,6 @@
 # OpenBook - The Open-Source Tool for Generating HTML Books about PHP Programming Language
 
-The aim of this project is to develop a convenient tool for generating online books on PHP programming readable online on any-sized device (from smartphones to desktops). It gets the book sources in Markdown format (particularly its 
-[Leanpub](https://leanpub.com/help/manual) flavor) produces HTML files on output.  
+The aim of this project is to develop a convenient tool for generating online books on PHP programming language. I want that the books generated be readable in any browser and on any-sized device (from smartphones to desktops). The tool gets the book sources in Markdown format (particularly the dialect of Markdown proposed by [Leanpub](https://leanpub.com/help/manual) website) and produces HTML files readable in a browser on output. Then the generated files can be published on the Internet on a cheap or free web hosting.  
 
 ## Background 
 
@@ -9,11 +8,43 @@ This project originated as an HTML files generator for my open-source PHP progra
 
 ## Features
 
-Currently the tool can:
+Currently the tool can do the following:
  
- * Generate
+ * Generate HTML files from Markdown (`.md`) sources.
+ * 
+
+# License
+
+This book uses the [MIT](https://en.wikipedia.org/wiki/MIT_License) license. It is a very permissive license, so you can use this project without almost any limitations.
 
 ## Installation
+
+To install the tool, you first need to install the PHP engine (version 5.6 or later will work). 
+
+In Linux Ubuntu you can do that with the following command:
+
+`sudo apt-get install php`
+
+In Linux CentOS you can do that with the command:
+
+`yum install php`
+
+If the instructions above do not work in your OS, please [search](https://www.google.com/search?q=install+php) for relevant instructions.
+
+Then [clone](https://help.github.com/articles/cloning-a-repository/) this repository or [download](https://github.com/olegkrivtsov/openbook/archive/master.zip) it as a ZIP archive and unpack somewhere.
+
+Go to the directory where you put the files and type the following commands to install the PHP dependency packages:
+
+```
+php composer.phar self-update
+php composer.phar install
+```
+
+Once that's done, you can run the tool with the following command:
+
+`php openbook.php [options] <book_dir>`
+
+## Command-Line Usage
 
 
 
@@ -109,24 +140,7 @@ You can find an example of a real-life book here: [https://github.com/olegkrivts
 
 ## Generating Your Book
 
-To generate HTML files for your own book, you first need to install the PHP engine (version 5.6 or later) like the following. In Linux Ubuntu you can do that with the following command:
 
-`sudo apt-get install php`
-
-In Linux CentOS you can do that with the command:
-
-`yum install php70`
-
-If the instructions above do not work in your OS, please [search](https://www.google.com/search?q=install+php) for relevant instructions.
-
-Then [clone](https://help.github.com/articles/cloning-a-repository/) this repository or download it as a ZIP archive and unpack somewhere.
-
-Go to the directory where you put the files and type the following to install the PHP dependency packages:
-
-```
-php composer.phar self-update
-php composer.phar install
-```
 
 Finally, generate the book with the following command:
 
@@ -138,9 +152,7 @@ If everything is OK, you'll find the HTML files in `/path/to/your/book/html` dir
 
 That's all, enjoy and do not hesitate to [report](https://github.com/olegkrivtsov/openbook/issues) bugs and contribute (see below)!
 
-# License
 
-This book uses the [MIT](https://en.wikipedia.org/wiki/MIT_License) license.
 
 # Contributing
 
