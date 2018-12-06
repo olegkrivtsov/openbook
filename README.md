@@ -4,7 +4,7 @@ The aim of this project is to develop a convenient tool for generating online bo
 
 ## Background 
 
-This project originated as an HTML files generator for my open-source PHP programming book [Using Zend Framework 3](https://github.com/olegkrivtsov/using-zend-framework-3-book). I wanted to have a console tool for generating the static HTML files of the book from Markdown sources and referenced PNG images. I didn't find ready tools that are convenient enough, so I decided to create my own tool.
+This project originated as an HTML files generator for my open-source PHP programming book, [Using Zend Framework 3](https://github.com/olegkrivtsov/using-zend-framework-3-book). I wanted to have a console tool for generating the static HTML files of the book from Markdown sources and referenced PNG images. I didn't find ready tools that are convenient enough, so I decided to create my own tool.
 
 ## Features
 
