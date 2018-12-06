@@ -13,7 +13,6 @@ Currently you can do the following using this tool:
  * Generate HTML files from Markdown (`.md`) sources using the command-line interface. The tool can automatically check for some errors/mistakes in your `.md` files and report them saving your time.
  * Reference PNG or JPEG images in the book text.
  * Display the Google AdSense ads on the book pages.
- * 
 
 # License
 
@@ -46,16 +45,14 @@ Once that's done, you can run the tool with the following command:
 
 `php openbook.php [options] <book_dir>`
 
-## Command-Line Usage
+Currently the following options are supported:
 
-
-
-## Using the Tool
-
+ * *-v* - output as much info to screen as possible
+ * *-l* - validate links to external websites in the book text to avoid unnecessary 404 Not Found errors when a reader clicks the link. If you specify this option, the book may be generated more slowly. 
 
 ### Book Structure
 
-If you want to briefly review an example of a ready book, take a look at the GitHub repository where I store the sources of my [Using Zend Framework 3](https://github.com/olegkrivtsov/using-zend-framework-3-book) book. If you find the structure of that repository confusing, please see below for clarification.
+If you want to briefly review an example of a ready book, take a look at the GitHub repository where I store the sources of my book, [Using Zend Framework 3](https://github.com/olegkrivtsov/using-zend-framework-3-book). If you find the structure of that repository confusing, please see below for clarification.
 
 The files of the book are organized in the following manner:
 
