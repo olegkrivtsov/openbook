@@ -15,7 +15,7 @@ Currently you can do the following using this tool:
  * Validate external web resources mentioned in book text to avoid broken links. 
  * Produce HTML book with all necessary images included ready for publishing on a static web hosting.
 
-# License
+## License
 
 This book uses the [MIT](https://en.wikipedia.org/wiki/MIT_License) license. It is a very permissive license, so you can use this project without almost any limitations.
 
@@ -51,7 +51,7 @@ Currently the following options are supported:
  * *-v* - output as much info to screen as possible
  * *-l* - validate links to external websites in the book text to avoid unnecessary 404 Not Found errors when a reader clicks the link. If you specify this option, the book may be generated more slowly. 
 
-### Book Structure
+## Book Structure
 
 If you want to briefly review an example of a ready book, take a look at the GitHub repository where I store the sources of my book, [Using Zend Framework 3](https://github.com/olegkrivtsov/using-zend-framework-3-book). If you find the structure of that repository confusing, please see below for clarification.
 
@@ -75,7 +75,7 @@ The files of the book are organized in the following manner:
 
 The *manuscript* directory is the directory where Markdown files of the book are stored. The *en/*, *ru/*, *another-lang/* are directories where the Markdown files for a specific language are stored. The *images* directory is the directory where you should place the PNG images you want to reference in the book text. 
 
-#### Options File
+### Properties File
 
 `openbook.json` should be a file in JSON format containing book properties, like its title,
 subtitle, copyright information, etc. An example of a real-life `openbook.json` is presented below:
@@ -147,13 +147,13 @@ If everything is OK, you'll find the HTML files in `/path/to/your/book/html` dir
 
 That's all, enjoy and do not hesitate to [report](https://github.com/olegkrivtsov/openbook/issues) bugs and contribute (see below)!
 
-# Contributing
+## Contributing
 
 You may contribute in the following ways:
 
  * If you want to report a bug, please use the [Issues](https://github.com/olegkrivtsov/openbook/issues) page.
  * If you want to propose an improvement, please make a fork of this repository, edit the source code and finally make a [pull](https://help.github.com/articles/about-pull-requests/) request.
  
-# Your Feedback is Appreciated
+## Your Feedback is Appreciated
 
 If you want to contact me personally to share your emotions about this project, please use the olegkrivtsov at gmail dot com email address. 
