@@ -135,14 +135,9 @@ chapter2.txt
 chapter3.txt
 ...
 ```
-
-You can find an example of a real-life book here: [https://github.com/olegkrivtsov/using-zend-framework-3-book](https://github.com/olegkrivtsov/using-zend-framework-3-book). The OpenBook tool was mainly developed to generate the HTML files of that book.
-
 ## Generating Your Book
 
-
-
-Finally, generate the book with the following command:
+You can generate the book with the following command:
 
 ```
 php openbook.php /path/to/your/book
@@ -161,4 +156,4 @@ You may contribute in the following ways:
  
 # Your Feedback
 
-If you want to contact me personally to share your imotions about this project, please use the olegkrivtsov at gmail dot com email address. But please note that this is my personal address and I will ignore non-relevant messages.
+If you want to contact me personally to share your emotions about this project, please use the olegkrivtsov at gmail dot com email address. 
