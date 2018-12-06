@@ -10,9 +10,10 @@ This project originated as an HTML files generator for my open-source PHP progra
 
 Currently you can do the following using this tool:
  
- * Generate HTML files from Markdown (`.md`) sources using the command-line interface. The tool can automatically check for some errors/mistakes in your `.md` files and report them saving your time.
- * Reference PNG or JPEG images in the book text.
- * Display the Google AdSense ads on the book pages.
+ * Generate HTML files from Markdown (`.md`) sources using the command-line interface. 
+ * Automatically check for some errors/mistakes in your `.md` files and report them saving your time.
+ * Validate external web resources mentioned in book text to avoid broken links. 
+ * Produce HTML book with all necessary images included ready for publishing on a static web hosting.
 
 # License
 
@@ -150,8 +151,6 @@ php openbook.php /path/to/your/book
 If everything is OK, you'll find the HTML files in `/path/to/your/book/html` directory.
 
 That's all, enjoy and do not hesitate to [report](https://github.com/olegkrivtsov/openbook/issues) bugs and contribute (see below)!
-
-
 
 # Contributing
 
