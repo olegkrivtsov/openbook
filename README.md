@@ -68,8 +68,16 @@ The files of the book are organized in the following manner:
       ...
     ru/
       images/
+      Book.txt
+      chapter1.txt
+      chapter2.txt
+      ...
     another-lang/
       images/
+      Book.txt
+      chapter1.txt
+      chapter2.txt
+      ...
   openbook.json  
 ```
 
