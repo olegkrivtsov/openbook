@@ -29,7 +29,7 @@ In Linux Ubuntu you can do that with the following command:
 
 In Linux CentOS you can do that with the command:
 
-`yum install php`
+`sudo yum install php`
 
 If the instructions above do not work in your OS, please [search](https://www.google.com/search?q=install+php) for relevant instructions.
 
