@@ -12,8 +12,13 @@ Currently you can do the following using this tool:
  
  * Generate HTML files from Markdown (`.md`) sources using the command-line interface. 
  * Automatically check for some errors/mistakes in your `.md` files and report them saving your time.
- * Validate external web resources mentioned in book text to avoid broken links. 
- * Produce HTML book with all necessary images included ready for publishing on a static web hosting.
+ * Validate external web resources mentioned in book text to avoid broken links.
+ * Embed a [Google Analytics](https://analytics.google.com) tag, so you are able to see visitor statistics for your book website.
+ * Embed a [Disqus](https://disqus.com/) message thread, so readers of your book are able to leave comments under chapter pages.
+ * Embed [Google AdSense](https://www.google.com/adsense) ads to get revenue from your online free book.
+ * Produce book pages for several languages (e.g. English, Russian, and Spanish).
+ * Produce HTML book with all necessary images included ready for publishing on a static web hosting (like GitHub Pages).
+ * Develop the book in a distributed way, if you have several co-authors that know how to use a version control system, like Git.
 
 ## License
 
