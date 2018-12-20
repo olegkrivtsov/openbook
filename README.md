@@ -70,20 +70,22 @@ The files of the book are organized in the following manner:
     en/
       images/
       Book.txt
+      preface.txt
+      acknowledgments.txt
       chapter1.txt
       chapter2.txt
       ...
     ru/
       images/
       Book.txt
+      preface.txt
+      acknowledgments.txt
       chapter1.txt
       chapter2.txt
       ...
     another-lang/
       images/
       Book.txt
-      chapter1.txt
-      chapter2.txt
       ...
   openbook.json  
 ```
