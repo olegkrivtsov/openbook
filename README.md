@@ -47,7 +47,9 @@ php composer.phar self-update
 php composer.phar install
 ```
 
-Once that's done, you can run the tool with the following command:
+## Command-line Usage
+
+Once the installation is done, you can run the tool with the following command:
 
 `php openbook.php [options] <book_dir>`
 
