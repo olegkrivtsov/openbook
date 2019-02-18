@@ -22,7 +22,7 @@ Currently you can do the following using this tool:
 
 ## License
 
-This book uses the [MIT](https://en.wikipedia.org/wiki/MIT_License) license. It is a very permissive license, so you can use this project without almost any limitations.
+This project uses the [MIT](https://en.wikipedia.org/wiki/MIT_License) license. It is a very permissive license, so you can use this project without almost any limitations.
 
 ## Installation
 
