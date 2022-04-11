@@ -170,7 +170,3 @@ You may contribute in the following ways:
 
  * If you want to report a bug, please use the [Issues](https://github.com/olegkrivtsov/openbook/issues) page.
  * If you want to propose an improvement, please make a fork of this repository, edit the source code and finally make a [pull](https://help.github.com/articles/about-pull-requests/) request.
- 
-## Your Feedback is Appreciated
-
-If you want to contact me personally to share your emotions about this project, please use the olegkrivtsov at gmail dot com email address. 
